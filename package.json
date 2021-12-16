@@ -1,0 +1,33 @@
+{
+  "name": "ffhb-championship-calendar-generator",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start:debug": "nodemon --experimental-specifier-resolution=node ./src/index.js",
+    "start": "node --experimental-specifier-resolution=node ./src/index.js"
+  },
+  "author": "KirianCaumes",
+  "license": "MIT",
+  "engines": {
+    "node": "16.13.x"
+  },
+  "type": "module",
+  "dependencies": {
+    "axios": "^0.24.0",
+    "bulma": "^0.9.3",
+    "express": "^4.17.1",
+    "handlebars": "^4.7.7",
+    "ical-generator": "^3.1.1"
+  },
+  "devDependencies": {
+    "@babel/eslint-parser": "^7.16.3",
+    "eslint": "^8.4.1",
+    "eslint-config-airbnb": "^19.0.2",
+    "eslint-plugin-import": "^2.25.3",
+    "eslint-plugin-jsdoc": "^37.1.0",
+    "eslint-plugin-jsx-a11y": "^6.5.1",
+    "nodemon": "^2.0.15"
+  }
+}

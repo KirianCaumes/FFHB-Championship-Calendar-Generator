@@ -1,0 +1,23 @@
+{
+	"editor.formatOnSave": true,
+	"[javascript]": {
+		"editor.tabSize": 4,
+		"editor.detectIndentation": false,
+	},
+	"editor.codeActionsOnSave": {
+		"source.fixAll": true
+	},
+	"eslint.workingDirectories": [
+		"./"
+	],
+	"html.format.wrapLineLength": 0,
+	"eslint.alwaysShowStatus": true,
+	"versionlens.suggestions.showOnStartup": true,
+	"terminal.integrated.defaultProfile.linux": "bash",
+	"terminal.integrated.profiles.linux": {
+		"bash": {
+			"path": "/bin/bash",
+			"icon": "terminal-bash"
+		},
+	},
+}

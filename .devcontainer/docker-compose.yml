@@ -1,0 +1,21 @@
+version: '3'
+services:
+  ffhbchampionshipcalendar_container:
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
+    stdin_open: true
+    tty: true
+    volumes:
+      - ../:/app_ffhbchampionshipcalendar:rw
+    ports:
+      - 5000:5000
+      - 3000:3000
+    networks:
+      - ffhbchampionshipcalendar_network
+    depends_on:
+      - mongo
+
+networks:
+  ffhbchampionshipcalendar_network:
+    driver: 'bridge'

@@ -1,0 +1,88 @@
+<html lang="FR-fr">
+
+<head>
+    <meta charset="utf-8" />
+    <title>FFHB Calendrier Championnat</title>
+    <meta name="robots" content="noindex" />
+    <link rel="stylesheet" href="/bulma/bulma.min.css" />
+    <link rel="icon" type="image/png" href="https://www.ffhandball.fr/static/favicon/favicon-32x32.png" sizes="32x32" />
+    <style>
+        .required:after {
+            content: " *";
+            color: #CC0000;
+        }
+    </style>
+</head>
+
+<body>
+    <section class="section">
+        <div class="container">
+            <h1 class="title is-4">
+                FFHB Générateur Calendrier Championnat
+            </h1>
+            <h2 class="subtitle">
+                Générer un lien à synchroniser contenant l'ensemble du championnat de votre équipe FFHB. À synchroniser sur votre agenda Google par exemple.
+            </h2>
+            <form onsubmit="addLinkToClipboard(event)">
+                <div class="field">
+                    <label class="label required">URL</label>
+                    <div class="control">
+                        <input class="input" type="text" id="url" name="url" type="url" placeholder="URL" required pattern="https:\/\/www\.ffhandball\.fr\/fr\/competition\/\d+#poule-\d+">
+                    </div>
+                    <p class="help">L'URL <b>exact</b> des résultats de votre championnat</p>
+                </div>
+                <div class="field">
+                    <label class="label required">Nom</label>
+                    <div class="control">
+                        <input class="input" type="text" id="name" name="name" placeholder="Nom" required minlength="1" maxlength="255">
+                    </div>
+                    <p class="help">Le nom <b>exact</b> de votre équipe sur la page de votre championnat sur le site de la FFHB</p>
+                </div>
+                <div class="field">
+                    <label class="label">Libellé</label>
+                    <div class="control">
+                        <input class="input" type="text" id="title" name="title" placeholder="Libellé" minlength="1" maxlength="255">
+                    </div>
+                    <p class="help">(Optionnel) Libellé à donnée pour votre calendrier.</p>
+                </div>
+                <div class="field">
+                    <div class="control">
+                        <button class="button is-link" type="submit">
+                            <span class="icon">
+                                📋
+                            </span>
+                            <span>Copier le lien du calendrier</span>
+                        </button>
+                    </div>
+                    <p id="link-copied" class="help is-success" style="display: none;">Lien généré et copié !</p>
+                </div>
+                <br />
+                <a href="https://support.google.com/calendar/answer/37100" target="_blank" rel="noreferrer">
+                    👉 Comment utiliser le lien généré sur votre Google Agenda (rubrique "Ajouter un agenda public via un lien") ?
+                </a>
+                <br />
+                <br />
+                <p class="is-size-7">
+                    Projet non lié à la FFHB - Par CAUMES Kirian - <a href="https://github.com/KirianCaumes" target="_blank" rel="noreferrer">Github</a>
+                </p>
+            </form>
+        </div>
+    </section>
+</body>
+
+<script>
+    /**
+     * Add link to clipboard
+     * @param {Event} ev Form event 
+     */
+    async function addLinkToClipboard(ev) {
+        ev.preventDefault()
+        const name = /** @type {HTMLInputElement} */(document.getElementById('name')).value
+        const url = /** @type {HTMLInputElement} */(document.getElementById('url')).value
+        const title = /** @type {HTMLInputElement} */(document.getElementById('title')).value
+        await navigator.clipboard.writeText(`${window.location.origin}?${new URLSearchParams({ name, url, title }).toString()}`)
+        document.getElementById('link-copied').style.display = 'block'
+    }
+</script>
+
+</html>
