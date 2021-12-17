@@ -34,7 +34,8 @@ export default async function getIcs(req, res) {
                 const {
                     date, hour, minute, day,
                 } = event.date
-                const dt = new Date(`${date}T${hour}:${minute}:00`)
+                const dtStart = new Date(`${date}T${hour}:${minute}:00`)
+                const dtEnd = new Date(dtStart.getTime() + (1.5 * 60 * 60 * 1000))
                 const status = (() => {
                     if (!teamOne?.score || !teamOne?.score)
                         return ''
@@ -42,18 +43,18 @@ export default async function getIcs(req, res) {
                     const teamOneScore = !Number.isNaN(parseInt(teamOne?.score, 10)) ? (parseInt(teamOne?.score, 10)) : 0
                     const teamTwoScore = !Number.isNaN(parseInt(teamTwo?.score, 10)) ? (parseInt(teamTwo?.score, 10)) : 0
                     if (isTeamOne ? teamOneScore > teamTwoScore : teamOneScore < teamTwoScore)
-                        return '✔️'
+                        return '✅'
                     if (!isTeamOne ? teamOneScore > teamTwoScore : teamOneScore < teamTwoScore)
                         return '❌'
                     return '🟠'
                 })()
 
                 return {
-                    location: event.location.map(location => location?.trim()).filter(x => !!x).join(', '),
+                    location: event.location.map(location => location?.trim()).filter(x => !!x).join(', ').toUpperCase(),
                     description: teamOne?.score && teamTwo?.score ? `Score : ${teamOne?.score} - ${teamTwo?.score} ${status}` : 'À venir',
-                    start: dt,
-                    end: dt,
-                    summary: `D.${day} : ${teamOne?.name || '?'} vs ${teamTwo?.name || '?'}`,
+                    start: dtStart,
+                    end: dtEnd,
+                    summary: `J.${day} : ${teamOne?.name || '?'} vs ${teamTwo?.name || '?'}`,
                     url,
                 }
             })
@@ -63,7 +64,7 @@ export default async function getIcs(req, res) {
 
         const cal = ical({
             timezone: 'Europe/Paris',
-            name: `${title || name} (${dates.at(0).start?.split('-')?.at(0) || '?'} - ${dates.at(-1).start?.split('-')?.at(0) || '?'})`,
+            name: `${title || name} (${dates[0].start?.split('-')?.[0] || '?'} - ${dates.at(-1).start?.split('-')?.[0] || '?'})`,
             events,
         })
 
