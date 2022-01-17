@@ -1,4 +1,4 @@
-FROM ubuntu:20.10
+FROM ubuntu:20.04
 
 # This Dockerfile adds a non-root user with sudo access.
 ARG USERNAME=vscode

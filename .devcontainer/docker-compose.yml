@@ -13,8 +13,6 @@ services:
       - 3000:3000
     networks:
       - ffhbchampionshipcalendar_network
-    depends_on:
-      - mongo
 
 networks:
   ffhbchampionshipcalendar_network:
