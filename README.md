@@ -2,7 +2,7 @@
 
 Generate a link to synchronize content of the entire championship of your FFHB team. To synchronize on your Google calendar for example.
 
-Try it out [here](https://ffhb-champ-calendar-generator.herokuapp.com/)!
+Try it out [here](https://ffhb-champ-calendar-generator.kiriancaumes.fr/)!
 
 ## Why this project?
 
