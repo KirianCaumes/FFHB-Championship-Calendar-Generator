@@ -1,18 +1,51 @@
+<!DOCTYPE html>
 <html lang="FR-fr">
 
 <head>
-    <meta name="viewport" content="width=device-width">
+    <meta
+        name="viewport"
+        content="width=device-width"
+    >
     <meta charset="utf-8" />
     <title>FFHB Générateur Calendrier Championnat</title>
-    <meta name="robots" content="noindex" />
-    <link rel="stylesheet" href="/bulma/bulma.min.css" />
-    <link rel="icon" type="image/png" href="https://www.ffhandball.fr/static/favicon/favicon-32x32.png" sizes="32x32" />
-    <meta name="description" content="Générez un lien à synchroniser contenant l'ensemble du championnat de votre équipe FFHB.">
-    <meta property="og:type" content="website">
-    <meta property="og:locale" content="FR-fr">
-    <meta property="og:title" content="FFHB Générateur Calendrier Championnat">
-    <meta property="og:description" content="Générez un lien à synchroniser contenant l'ensemble du championnat de votre équipe FFHB.">
-    <meta property="og:url" content="https://ffhb-champ-calendar-generator.kiriancaumes.fr/">
+    <meta
+        name="robots"
+        content="noindex"
+    />
+    <link
+        rel="stylesheet"
+        href="/bulma/bulma.min.css"
+    />
+    <link
+        rel="icon"
+        type="image/png"
+        href="https://www.ffhandball.fr/static/favicon/favicon-32x32.png"
+        sizes="32x32"
+    />
+    <meta
+        name="description"
+        content="Générez un lien à synchroniser contenant l'ensemble du championnat de votre équipe FFHB."
+    >
+    <meta
+        property="og:type"
+        content="website"
+    >
+    <meta
+        property="og:locale"
+        content="FR-fr"
+    >
+    <meta
+        property="og:title"
+        content="FFHB Générateur Calendrier Championnat"
+    >
+    <meta
+        property="og:description"
+        content="Générez un lien à synchroniser contenant l'ensemble du championnat de votre équipe FFHB."
+    >
+    <meta
+        property="og:url"
+        content="https://ffhb-champ-calendar-generator.kiriancaumes.fr/"
+    >
     <style>
         .required:after {
             content: " *";
@@ -32,45 +65,131 @@
             </h2>
             <form onsubmit="addLinkToClipboard(event)">
                 <div class="field">
-                    <label class="label required">URL</label>
+                    <label
+                        class="label required"
+                        for="url"
+                    >
+                        URL
+                    </label>
                     <div class="control">
-                        <input class="input" type="text" id="url" name="url" type="url" placeholder="URL" required pattern="https:\/\/www\.ffhandball\.fr\/fr\/competition\/\d+#poule-\d+">
+                        <input
+                            class="input"
+                            type="text"
+                            id="url"
+                            name="url"
+                            type="url"
+                            placeholder="URL"
+                            required
+                            pattern="https:\/\/www\.ffhandball\.fr\/fr\/competition\/\d+#poule-\d+"
+                            onchange="updateLink()"
+                        >
                     </div>
                     <p class="help">L'URL <b>exact</b> des résultats de votre championnat</p>
                 </div>
                 <div class="field">
-                    <label class="label required">Nom</label>
+                    <label
+                        class="label required"
+                        for="name"
+                    >
+                        Nom
+                    </label>
                     <div class="control">
-                        <input class="input" type="text" id="name" name="name" placeholder="Nom" required minlength="1" maxlength="255">
+                        <input
+                            class="input"
+                            type="text"
+                            id="name"
+                            name="name"
+                            placeholder="Nom"
+                            required
+                            minlength="1"
+                            maxlength="255"
+                            onchange="updateLink()"
+                        >
                     </div>
                     <p class="help">Le nom <b>exact</b> de votre équipe sur la page de votre championnat sur le site de la FFHB</p>
                 </div>
                 <div class="field">
-                    <label class="label">Libellé</label>
+                    <label
+                        class="label"
+                        for="title"
+                    >
+                        Libellé
+                    </label>
                     <div class="control">
-                        <input class="input" type="text" id="title" name="title" placeholder="Libellé" minlength="1" maxlength="255">
+                        <input
+                            class="input"
+                            type="text"
+                            id="title"
+                            name="title"
+                            placeholder="Libellé"
+                            minlength="1"
+                            maxlength="255"
+                            onchange="updateLink()"
+                        >
                     </div>
-                    <p class="help">(Optionnel) Libellé à donnée pour votre calendrier.</p>
+                    <p class="help">(Optionnel) Libellé à donnée pour votre calendrier. Les années de la saison sont ajoutées automatiquement.</p>
                 </div>
-                <div class="field">
-                    <div class="control">
-                        <button class="button is-link" type="submit">
-                            <span class="icon">
-                                📋
-                            </span>
-                            <span>Copier le lien du calendrier</span>
-                        </button>
+                <div class="field-body">
+                    <div class="field is-expanded">
+                        <label
+                            class="label"
+                            for="link"
+                        >
+                            Lien du calendrier généré
+                        </label>
+                        <div class="field has-addons">
+                            <div class="control is-expanded">
+                                <input
+                                    class="input"
+                                    type="url"
+                                    id="link"
+                                    name="link"
+                                    placeholder="Lien du calendrier généré"
+                                    readonly
+                                >
+                            </div>
+                            <div class="control">
+                                <button
+                                    class="button is-link"
+                                    type="submit"
+                                    disabled
+                                    id="copy-button"
+                                >
+                                    <span class="icon">
+                                        📋
+                                    </span>
+                                    <span>Copier</span>
+                                </button>
+                            </div>
+                        </div>
+                        <p
+                            id="link-copied"
+                            class="help is-success"
+                            style="display: none;"
+                        >
+                            Lien copié !
+                        </p>
                     </div>
-                    <p id="link-copied" class="help is-success" style="display: none;">Lien généré et copié !</p>
                 </div>
+
                 <br />
-                <a href="https://support.google.com/calendar/answer/37100" target="_blank" rel="noreferrer">
+                <a
+                    href="https://support.google.com/calendar/answer/37100"
+                    target="_blank"
+                    rel="noreferrer"
+                >
                     👉 Comment utiliser le lien généré sur votre Google Agenda (rubrique "Ajouter un agenda public via un lien") ?
                 </a>
                 <br />
                 <br />
                 <p class="is-size-7">
-                    Projet non lié à la FFHB - Par CAUMES Kirian - <a href="https://github.com/KirianCaumes/FFHB-Championship-Calendar-Generator" target="_blank" rel="noreferrer">Github</a>
+                    Projet non lié à la FFHB - Par CAUMES Kirian - <a
+                        href="https://github.com/KirianCaumes/FFHB-Championship-Calendar-Generator"
+                        target="_blank"
+                        rel="noreferrer"
+                    >
+                        Github
+                    </a>
                 </p>
             </form>
         </div>
@@ -78,16 +197,46 @@
 </body>
 
 <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        updateCopyButton()
+    })
+
+    /**
+     * Update state of copy button
+     */
+    async function updateCopyButton() {
+        const name = /** @type {HTMLInputElement} */(document.getElementById('name')).value
+        const url = /** @type {HTMLInputElement} */(document.getElementById('url')).value;
+
+       /** @type {HTMLButtonElement} */(document.getElementById('copy-button')).disabled = !name || !url;
+    }
+
+    /**
+     * Update generated link
+     */
+    function updateLink() {
+        const params = {
+            name: /** @type {HTMLInputElement} */(document.getElementById('name')).value,
+            url:/** @type {HTMLInputElement} */(document.getElementById('url')).value,
+            title: /** @type {HTMLInputElement} */(document.getElementById('title')).value,
+        }
+
+        // Remove empty keys
+        Object.keys(params).forEach((k) => !params[k] && delete params[k])
+
+        // Update button copy disable/enable
+        updateCopyButton();
+
+        /** @type {HTMLInputElement} */(document.getElementById('link')).value = `${window.location.origin}?${new URLSearchParams(params).toString()}`
+    }
+
     /**
      * Add link to clipboard
      * @param {Event} ev Form event 
      */
     async function addLinkToClipboard(ev) {
         ev.preventDefault()
-        const name = /** @type {HTMLInputElement} */(document.getElementById('name')).value
-        const url = /** @type {HTMLInputElement} */(document.getElementById('url')).value
-        const title = /** @type {HTMLInputElement} */(document.getElementById('title')).value
-        await navigator.clipboard.writeText(`${window.location.origin}?${new URLSearchParams({ name, url, title }).toString()}`)
+        await navigator.clipboard.writeText(/** @type {HTMLInputElement} */(document.getElementById('link')).value)
         document.getElementById('link-copied').style.display = 'block'
     }
 </script>

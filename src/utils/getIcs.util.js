@@ -30,12 +30,13 @@ export default async function getIcs(req, res) {
             .filter(event => event.teams.some(team => team.name?.toLowerCase()?.trim() === name?.toLowerCase()?.trim())
                 && event.date.date && event.date.hour && event.date.minute)
             .map(event => {
-                const [teamOne, teamTwo] = event.teams
                 const {
                     date, hour, minute, day,
                 } = event.date
                 const dtStart = new Date(`${date}T${hour}:${minute}:00`)
                 const dtEnd = new Date(dtStart.getTime() + (1.5 * 60 * 60 * 1000))
+
+                const [teamOne, teamTwo] = event.teams
                 const status = (() => {
                     if (!teamOne?.score || !teamOne?.score)
                         return ''
@@ -49,14 +50,19 @@ export default async function getIcs(req, res) {
                     return '🟠'
                 })()
 
-                return {
+                const fileCode = event.CON_CODE_RENC?.split('') ?? []
+
+                return /** @type {import('ical-generator').ICalEventData} */({
                     location: event.location.map(location => location?.trim()).filter(x => !!x).join(', ').toUpperCase(),
                     description: teamOne?.score && teamTwo?.score ? `Score : ${teamOne?.score} - ${teamTwo?.score} ${status}` : 'À venir',
                     start: dtStart,
                     end: dtEnd,
                     summary: `J.${day} : ${teamOne?.name || '?'} vs ${teamTwo?.name || '?'}`,
                     url,
-                }
+                    attachments: fileCode?.length >= 4
+                        ? [`https://www.ffhandball.fr/api/s3/fdm/${fileCode[0]}/${fileCode[1]}/${fileCode[2]}/${fileCode[3]}/${event.CON_CODE_RENC}.pdf`]
+                        : undefined
+                })
             })
 
         if (!events.length)

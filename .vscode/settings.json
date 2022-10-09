@@ -20,4 +20,5 @@
 			"icon": "terminal-bash"
 		},
 	},
+	"html.format.wrapAttributes": "force-expand-multiline",
 }
