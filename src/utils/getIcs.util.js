@@ -51,17 +51,21 @@ export default async function getIcs(req, res) {
                 })()
 
                 const fileCode = event.CON_CODE_RENC?.split('') ?? []
+                const fileUrl = fileCode?.length >= 4
+                    ? `https://www.ffhandball.fr/api/s3/fdm/${fileCode[0]}/${fileCode[1]}/${fileCode[2]}/${fileCode[3]}/${event.CON_CODE_RENC}.pdf`
+                    : null
 
                 return /** @type {import('ical-generator').ICalEventData} */({
                     location: event.location.map(location => location?.trim()).filter(x => !!x).join(', ').toUpperCase(),
-                    description: teamOne?.score && teamTwo?.score ? `Score : ${teamOne?.score} - ${teamTwo?.score} ${status}` : 'À venir',
+                    description: [
+                        teamOne?.score && teamTwo?.score ? `${status} Score : ${teamOne?.score} - ${teamTwo?.score}` : '👉 À venir',
+                        fileUrl ? `🔗 ${fileUrl.substring(12)}` : null,
+                    ].filter(x => x).join('\n'),
                     start: dtStart,
                     end: dtEnd,
                     summary: `J.${day} : ${teamOne?.name || '?'} vs ${teamTwo?.name || '?'}`,
                     url,
-                    attachments: fileCode?.length >= 4
-                        ? [`https://www.ffhandball.fr/api/s3/fdm/${fileCode[0]}/${fileCode[1]}/${fileCode[2]}/${fileCode[3]}/${event.CON_CODE_RENC}.pdf`]
-                        : undefined
+                    attachments: fileUrl ? [fileUrl] : undefined,
                 })
             })
 
