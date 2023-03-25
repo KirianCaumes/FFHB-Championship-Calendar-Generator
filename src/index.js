@@ -5,6 +5,7 @@ import getIcs from './utils/getIcs.util'
 const app = express()
 
 app.use('/bulma', express.static(`${path.resolve()}/node_modules/bulma/css`))
+app.use(express.static('public'))
 
 app.all('*', getIcs)
 
