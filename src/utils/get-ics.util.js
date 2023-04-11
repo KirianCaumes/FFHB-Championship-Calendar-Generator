@@ -55,11 +55,14 @@ export default async function getIcs(req, res) {
                     ? `https://www.ffhandball.fr/api/s3/fdm/${fileCode[0]}/${fileCode[1]}/${fileCode[2]}/${fileCode[3]}/${event.CON_CODE_RENC}.pdf`
                     : null
 
+                const referees = event.referees?.map(referee => referee?.name).filter(x => x) ?? []
+
                 return /** @type {import('ical-generator').ICalEventData} */({
                     location: event.location.map(location => location?.trim()).filter(x => !!x).join(', ').toUpperCase(),
                     description: [
                         teamOne?.score && teamTwo?.score ? `${status} Score : ${teamOne?.score} - ${teamTwo?.score}` : '👉 À venir',
                         fileUrl ? `🔗 ${fileUrl.substring(12)}` : null,
+                        referees?.length ? `🧑‍⚖️ ${new Intl.ListFormat('fr-FR', { style: 'long', type: 'conjunction' }).format(referees)}` : null,
                     ].filter(x => x).join('\n'),
                     start: dtStart,
                     end: dtEnd,
