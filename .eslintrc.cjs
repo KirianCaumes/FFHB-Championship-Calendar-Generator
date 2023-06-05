@@ -41,8 +41,9 @@ module.exports = {
         'function-paren-newline': ['error', 'consistent'],
         'jsdoc/no-undefined-types': ['warn', {
             definedTypes: [
-                'FfhbApiResult',
-                'FfhbApiDatesResult',
+                'FfhbApiCompetitionListResult',
+                'FfhbApiAddressResult',
+                'FfhbApiJourneesResult',
                 'Record',
                 'QueryType',
             ],

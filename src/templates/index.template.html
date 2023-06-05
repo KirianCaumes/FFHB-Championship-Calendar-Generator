@@ -18,9 +18,8 @@
     />
     <link
         rel="icon"
-        type="image/png"
-        href="https://www.ffhandball.fr/static/favicon/favicon-32x32.png"
-        sizes="32x32"
+        href="https://www.ffhandball.fr/wp-content/uploads/2023/04/cropped-favicon-32x32.png"
+        sizes="32x32" 
     />
     <meta
         name="description"
@@ -78,35 +77,13 @@
                             id="url"
                             name="url"
                             type="url"
-                            placeholder="URL"
+                            placeholder="https://www.ffhandball.fr/competitions/saison-XXXX-XXXX-XX/XXXXXX/XXXXX-XXXX/equipe-XXXX/"
                             required
-                            pattern="https:\/\/www\.ffhandball\.fr\/fr\/competition\/\d+#poule-\d+"
+                            pattern="https:\/\/www\.ffhandball\.fr\/competitions\/saison-.*\/.*\/.*\/equipe-\d+\/?$"
                             onchange="updateLink()"
                         >
                     </div>
-                    <p class="help">L'URL <b>exact</b> des résultats de votre championnat</p>
-                </div>
-                <div class="field">
-                    <label
-                        class="label required"
-                        for="name"
-                    >
-                        Nom
-                    </label>
-                    <div class="control">
-                        <input
-                            class="input"
-                            type="text"
-                            id="name"
-                            name="name"
-                            placeholder="Nom"
-                            required
-                            minlength="1"
-                            maxlength="255"
-                            onchange="updateLink()"
-                        >
-                    </div>
-                    <p class="help">Le nom <b>exact</b> de votre équipe sur la page de votre championnat sur le site de la FFHB</p>
+                    <p class="help">L'URL <b>exact</b> des résultats de votre championnat. Veuillez bien sélectionner votre club via le menu déroulant "Filtrer par club" sur le site de la FFHB.</p>
                 </div>
                 <div class="field">
                     <label
@@ -205,10 +182,9 @@
      * Update state of copy button
      */
     async function updateCopyButton() {
-        const name = /** @type {HTMLInputElement} */(document.getElementById('name')).value
-        const url = /** @type {HTMLInputElement} */(document.getElementById('url')).value;
+        const urlInputElement = /** @type {HTMLInputElement} */(document.getElementById('url'));
 
-       /** @type {HTMLButtonElement} */(document.getElementById('copy-button')).disabled = !name || !url;
+       /** @type {HTMLButtonElement} */(document.getElementById('copy-button')).disabled = !urlInputElement.value || !urlInputElement.checkValidity()
     }
 
     /**
@@ -216,7 +192,6 @@
      */
     function updateLink() {
         const params = {
-            name: /** @type {HTMLInputElement} */(document.getElementById('name')).value,
             url:/** @type {HTMLInputElement} */(document.getElementById('url')).value,
             title: /** @type {HTMLInputElement} */(document.getElementById('title')).value,
         }
