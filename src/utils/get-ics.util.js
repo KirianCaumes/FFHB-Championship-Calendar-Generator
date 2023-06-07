@@ -99,7 +99,7 @@ export default async function getIcs(req, res) {
                         rencontre.equipe1Score && rencontre.equipe2Score
                             ? `${status} Score : ${rencontre.equipe1Score} - ${rencontre.equipe2Score}`
                             : '👉 À venir',
-                        fileUrl ? `🔗 ${fileUrl.substring(12)}` : null,
+                        fileUrl ? `🔗 ${fileUrl.replace('https://', '')}` : null,
                         referees?.length ? `🧑‍⚖️ ${new Intl.ListFormat('fr-FR', { style: 'long', type: 'conjunction' }).format(referees)}` : null,
                     ].filter(x => x).join('\n'),
                     start: dtStart,
