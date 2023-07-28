@@ -111,7 +111,16 @@ export default async function getIcs(req, res) {
             }).filter(x => x)
 
         if (!events.length)
-            return res.status(404).send("Aucun match n'a été trouvé correspondant à votre équipe.")
+            return res.status(404).send(`
+                <p>Aucun match n'a été trouvé : </p>
+                <ul>
+                    <li>
+                        Veuillez vérifier que le lien fourni respecte bien <a href="/" target="_blank">les conditions</a> : 
+                        <a href={${url}} target="_blank">${url}</a>
+                    </li>
+                    <li>Veuillez vérifier qu'au moins un des matchs ait une date/heure associée (pas uniquement une journée)</li>
+                </ul>
+            `)
 
         /** @type {FfhbApiJourneesResult} */
         const journees = JSON.parse(rencontreList.poule.journees)
