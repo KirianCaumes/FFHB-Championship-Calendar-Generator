@@ -1,7 +1,7 @@
+import fs from 'fs'
 import ical from 'ical-generator'
 import axios from 'axios'
 import Handlebars from 'handlebars'
-import fs from 'fs'
 import { JSDOM } from 'jsdom'
 import getCfkKey from './get-cfk-key.util'
 import decipher from './decipher.util'
@@ -34,6 +34,9 @@ export default async function getIcs(req, res) {
         const cfkKey = await getCfkKey()
 
         const rencontreList = /** @type {FfhbApiCompetitionListResult} */(decipher(dataRencontreListData, cfkKey))
+
+        if (rencontreList.rencontres?.length === 0)
+            throw new Error(`Aucune rencontres n'a été trouvé pour l'URL ${url} `)
 
         /** Addresses (and more?) are scraped because they are no longer inside the API returns. And no others API seems to be available for these data */
         const details = await Promise.allSettled(
@@ -110,18 +113,6 @@ export default async function getIcs(req, res) {
                 })
             }).filter(x => x)
 
-        if (!events.length)
-            return res.status(404).send(`
-                <p>Aucun match n'a été trouvé : </p>
-                <ul>
-                    <li>
-                        Veuillez vérifier que le lien fourni respecte bien <a href="/" target="_blank">les conditions</a> : 
-                        <a href={${url}} target="_blank">${url}</a>
-                    </li>
-                    <li>Veuillez vérifier qu'au moins un des matchs ait une date/heure associée (pas uniquement une journée)</li>
-                </ul>
-            `)
-
         /** @type {FfhbApiJourneesResult} */
         const journees = JSON.parse(rencontreList.poule.journees)
 
@@ -138,6 +129,11 @@ export default async function getIcs(req, res) {
     } catch (error) {
         // eslint-disable-next-line no-console
         console.error(error)
-        return res.status(500).send(error)
+        return res.status(400).send(`
+            <p>Une erreur est survenue : <i>${error.message}</i></p>
+            <p>Veuillez vérifier que le lien fourni respecte bien <a href="/" target="_blank">les conditions</a> :
+            <a href={${url}} target="_blank">${url}</a>.</p>
+            <p>Vous pouvez également contacter un administrateur du site.</p>
+        `)
     }
 }
