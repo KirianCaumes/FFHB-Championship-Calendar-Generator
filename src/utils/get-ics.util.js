@@ -130,7 +130,7 @@ export default async function getIcs(req, res) {
         const journees = JSON.parse(rencontreList.poule.journees)
 
         /** @type {import('ical-generator').ICalCalendarData['name']} */
-        let name = title || rencontreList.poule.libelle || ''
+        let name = rencontreList.poule.libelle || 'Équipe'
 
         // Add years if possible
         if (journees?.[0]?.date_debut || journees?.at(-1)?.date_debut)
@@ -141,14 +141,14 @@ export default async function getIcs(req, res) {
 
         const cal = ical({
             timezone: 'Europe/Paris',
-            name,
+            name: title || name,
             events,
         })
 
         // Save to cache
         if (!fs.existsSync(ICALS_FOLDER))
             fs.mkdirSync(ICALS_FOLDER)
-        fs.writeFileSync(fileName, JSON.stringify(cal))
+        fs.writeFileSync(fileName, JSON.stringify(ical({ timezone: 'Europe/Paris', name, events })))
 
         return cal.serve(res)
     } catch (error) {
