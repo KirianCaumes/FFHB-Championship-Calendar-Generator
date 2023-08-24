@@ -19,7 +19,7 @@
     <link
         rel="icon"
         href="https://www.ffhandball.fr/wp-content/uploads/2023/04/cropped-favicon-32x32.png"
-        sizes="32x32" 
+        sizes="32x32"
     />
     <meta
         name="description"
@@ -79,7 +79,7 @@
                             type="url"
                             placeholder="https://www.ffhandball.fr/competitions/saison-XXXX-XXXX-XX/XXXXXX/XXXXX-XXXX/equipe-XXXX/"
                             required
-                            pattern="https:\/\/www\.ffhandball\.fr\/competitions\/saison-.*\/.*\/.*\/equipe-\d+\/?$"
+                            pattern="https:\/\/www\.ffhandball\.fr\/competitions\/saison-.*\/.*\/.*\/equipe-\d+\/$"
                             onchange="updateLink()"
                         >
                     </div>
@@ -202,7 +202,14 @@
         // Update button copy disable/enable
         updateCopyButton();
 
-        /** @type {HTMLInputElement} */(document.getElementById('link')).value = `${window.location.origin}?${new URLSearchParams(params).toString()}`
+        const urlInputElement = /** @type {HTMLInputElement} */(document.getElementById('url'))
+        const linkInputElement = /** @type {HTMLInputElement} */(document.getElementById('link'))
+
+        if (urlInputElement.checkValidity()) {
+            linkInputElement.value = `${window.location.origin}?${new URLSearchParams(params).toString()}`
+        } else {
+            linkInputElement.value = ''
+        }
     }
 
     /**

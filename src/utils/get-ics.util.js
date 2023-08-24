@@ -6,6 +6,8 @@ import { JSDOM } from 'jsdom'
 import getCfkKey from './get-cfk-key.util'
 import decipher from './decipher.util'
 
+const ICALS_FOLDER = './icals'
+
 /**
  * @param {import('express').Request<{}, any, any, QueryType, Record<string, any>>} req Request
  * @param {import('express').Response<any, Record<string, any>, number>} res Result
@@ -19,6 +21,17 @@ export default async function getIcs(req, res) {
 
     try {
         const equipeId = /\/equipe-([^)]+)\//gm.exec(url)[1]
+
+        const fileName = `${ICALS_FOLDER}/${equipeId}.json`
+
+        // Read from cache, if file was created 1h ago max. That way, we can prevent spamming FFHB website
+        if (fs.existsSync(fileName) && Math.abs(fs.statSync(fileName).birthtime.getTime() - new Date().getTime()) / 36e5 < 1) {
+            const json = fs.readFileSync(fileName)?.toString()
+
+            if (json)
+                return ical(JSON.parse(json)).serve(res)
+        }
+
         const urlCompetition = url.replace(/\/$/, '').split('/').at(-2)
 
         const { data: dataRencontreListData } = await axios.request({
@@ -116,14 +129,26 @@ export default async function getIcs(req, res) {
         /** @type {FfhbApiJourneesResult} */
         const journees = JSON.parse(rencontreList.poule.journees)
 
+        /** @type {import('ical-generator').ICalCalendarData['name']} */
+        let name = title || rencontreList.poule.libelle || ''
+
+        // Add years if possible
+        if (journees?.[0]?.date_debut || journees?.at(-1)?.date_debut)
+            name += ` (${[
+                new Date(journees?.[0]?.date_debut)?.getFullYear(),
+                new Date(journees?.at(-1)?.date_debut)?.getFullYear(),
+            ].filter((value, index, self) => value && self.indexOf(value) === index).join(' - ')})`
+
         const cal = ical({
             timezone: 'Europe/Paris',
-            name: `${title || rencontreList.poule.libelle} (${[
-                new Date(journees?.[0]?.date_debut)?.getFullYear() || '?',
-                new Date(journees?.at(-1)?.date_debut)?.getFullYear() || '?',
-            ].join(' - ')})`,
+            name,
             events,
         })
+
+        // Save to cache
+        if (!fs.existsSync(ICALS_FOLDER))
+            fs.mkdirSync(ICALS_FOLDER)
+        fs.writeFileSync(fileName, JSON.stringify(cal))
 
         return cal.serve(res)
     } catch (error) {
