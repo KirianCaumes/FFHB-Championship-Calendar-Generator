@@ -32,14 +32,14 @@ export default async function getIcs(req, res) {
                 return ical(JSON.parse(json)).serve(res)
         }
 
-        const urlCompetition = url.replace(/\/$/, '').split('/').at(-2)
+        const competition = url.replace(/\/$/, '').split('/').at(-2)
 
         const { data: dataRencontreListData } = await axios.request({
             url: 'https://www.ffhandball.fr/wp-json/competitions/v1/computeBlockAttributes',
             method: 'GET',
             params: {
                 block: 'competitions---rencontre-list',
-                url_competition: urlCompetition,
+                url_competition: competition,
                 ext_equipe_id: equipeId,
             },
         })
@@ -117,6 +117,10 @@ export default async function getIcs(req, res) {
                             : '👉 À venir',
                         fileUrl ? `🔗 ${fileUrl.replace('https://', '')}` : null,
                         referees?.length ? `🧑‍⚖️ ${new Intl.ListFormat('fr-FR', { style: 'long', type: 'conjunction' }).format(referees)}` : null,
+                        rencontre.extPouleId
+                            ? `#️⃣ ${url.split('/').slice(0, -2).join('/')}/poule-${rencontre.extPouleId}/journee-${rencontre.journeeNumero}/`
+                                .replace('https://www.', '')
+                            : null,
                     ].filter(x => x).join('\n'),
                     start: dtStart,
                     end: dtEnd,

@@ -74,15 +74,22 @@
                         <input
                             class="input"
                             type="text"
-                            id="url"
+                            id="url-input"
                             name="url"
                             type="url"
                             placeholder="https://www.ffhandball.fr/competitions/saison-XXXX-XXXX-XX/XXXXXX/XXXXX-XXXX/equipe-XXXX/"
                             required
                             pattern="https:\/\/www\.ffhandball\.fr\/competitions\/saison-.*\/.*\/.*\/equipe-\d+\/$"
-                            onchange="updateLink()"
+                            onchange="setLinkInputState()"
                         >
                     </div>
+                    <p
+                        id="help-url-invalid"
+                        class="help is-danger"
+                        style="display: none;"
+                    >
+                        Le lien saisi ne respecte pas la forme : "https://www.ffhandball.fr/competitions/saison-XXXX-XXXX-XX/XXXXXX/XXXXX-XXXX/equipe-XXXX/"
+                    </p>
                     <p class="help">L'URL <b>exact</b> des résultats de votre championnat. Veuillez bien sélectionner votre club via le menu déroulant "Filtrer par club" sur le site de la FFHB.</p>
                 </div>
                 <div class="field">
@@ -96,12 +103,12 @@
                         <input
                             class="input"
                             type="text"
-                            id="title"
+                            id="title-input"
                             name="title"
                             placeholder="Libellé"
                             minlength="1"
                             maxlength="255"
-                            onchange="updateLink()"
+                            onchange="setLinkInputState()"
                         >
                     </div>
                     <p class="help">(Optionnel) Libellé à donnée pour votre calendrier. Les années de la saison sont ajoutées automatiquement.</p>
@@ -118,9 +125,9 @@
                             <div class="control is-expanded">
                                 <input
                                     class="input"
-                                    type="url"
-                                    id="link"
+                                    id="link-input"
                                     name="link"
+                                    type="url"
                                     placeholder="Lien du calendrier généré"
                                     readonly
                                 >
@@ -140,7 +147,7 @@
                             </div>
                         </div>
                         <p
-                            id="link-copied"
+                            id="help-link-copied"
                             class="help is-success"
                             style="display: none;"
                         >
@@ -174,52 +181,50 @@
 </body>
 
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        updateCopyButton()
+    document.addEventListener('DOMContentLoaded', () => {
+        setLinkInputState()
     })
 
-    /**
-     * Update state of copy button
-     */
-    async function updateCopyButton() {
-        const urlInputElement = /** @type {HTMLInputElement} */(document.getElementById('url'));
-
-       /** @type {HTMLButtonElement} */(document.getElementById('copy-button')).disabled = !urlInputElement.value || !urlInputElement.checkValidity()
-    }
+    const urlInputElement = /** @type {HTMLInputElement} */(document.getElementById('url-input'))
+    const titleInputElement = /** @type {HTMLInputElement} */(document.getElementById('title-input'))
+    const linkInputElement = /** @type {HTMLInputElement} */(document.getElementById('link-input'))
+    const copyButtonElement = /** @type {HTMLInputElement} */(document.getElementById('copy-button'))
+    const helpLinkCopiedElement = /** @type {HTMLInputElement} */(document.getElementById('help-link-copied'))
+    const helpUrlInvalidElement = /** @type {HTMLInputElement} */(document.getElementById('help-url-invalid'))
 
     /**
-     * Update generated link
+     * Update state of input link / copy button
      */
-    function updateLink() {
-        const params = {
-            url:/** @type {HTMLInputElement} */(document.getElementById('url')).value,
-            title: /** @type {HTMLInputElement} */(document.getElementById('title')).value,
-        }
-
-        // Remove empty keys
-        Object.keys(params).forEach((k) => !params[k] && delete params[k])
-
-        // Update button copy disable/enable
-        updateCopyButton();
-
-        const urlInputElement = /** @type {HTMLInputElement} */(document.getElementById('url'))
-        const linkInputElement = /** @type {HTMLInputElement} */(document.getElementById('link'))
-
-        if (urlInputElement.checkValidity()) {
-            linkInputElement.value = `${window.location.origin}?${new URLSearchParams(params).toString()}`
+    async function setLinkInputState() {
+        if (urlInputElement.value) {
+            if (urlInputElement.checkValidity()) {
+                urlInputElement.classList.remove('is-danger')
+                helpUrlInvalidElement.style.display = 'none'
+                linkInputElement.value = `${window.location.origin}?${new URLSearchParams(
+                    Object.fromEntries(Object.entries({
+                        url: urlInputElement.value,
+                        title: titleInputElement.value,
+                    }).filter(([_, v]) => v))).toString()}`
+                copyButtonElement.disabled = false
+            } else {
+                urlInputElement.classList.add('is-danger')
+                helpUrlInvalidElement.style.display = 'block'
+                linkInputElement.value = ''
+                copyButtonElement.disabled = true
+            }
         } else {
-            linkInputElement.value = ''
+            copyButtonElement.disabled = true
         }
     }
 
     /**
      * Add link to clipboard
-     * @param {Event} ev Form event 
+     * @param {Event} ev Form event
      */
     async function addLinkToClipboard(ev) {
         ev.preventDefault()
-        await navigator.clipboard.writeText(/** @type {HTMLInputElement} */(document.getElementById('link')).value)
-        document.getElementById('link-copied').style.display = 'block'
+        await navigator.clipboard.writeText(linkInputElement.value)
+        helpLinkCopiedElement.style.display = 'block'
     }
 </script>
 

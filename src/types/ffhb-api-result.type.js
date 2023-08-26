@@ -46,6 +46,7 @@
  * @property {string} rencontres.structure1Logo structure1Logo
  * @property {string} rencontres.structure2Logo structure2Logo
  * @property {string} rencontres.phaseLibelle phaseLibelle
+ * @property {string} rencontres.extPouleId extPouleId
  */
 
 /**
