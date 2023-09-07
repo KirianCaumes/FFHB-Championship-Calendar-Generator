@@ -12,7 +12,7 @@ To provide an easy way to keep track of your FFHB matches. Not affiliated with t
 
 ## How to deploy in production
 
-Install dependecies with:
+Install dependencies with:
 
 ```sh
 npm install
@@ -28,7 +28,7 @@ npm start
 
 There is a [devcontainer](https://code.visualstudio.com/docs/devcontainers/containers) on that project already configured, feel free to use it.
 
-Install dependecies with:
+Install dependencies with:
 
 ```sh
 npm install
