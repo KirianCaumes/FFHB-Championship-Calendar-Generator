@@ -12,5 +12,5 @@ app.all('*', getIcs)
 app.listen(
     process.env.PORT || 3000,
     // eslint-disable-next-line no-console
-    () => console.log('FFHB Championship Calendar Generator started'),
+    () => console.log(`FFHB Championship Calendar Generator listening on ${process.env.PORT || 3000}`),
 )

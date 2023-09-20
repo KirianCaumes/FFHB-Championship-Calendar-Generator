@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start:debug": "node --watch --experimental-specifier-resolution=node ./src/index.js",
-    "start": "node --experimental-specifier-resolution=node ./src/index.js"
+    "start:debug": "node --watch --experimental-specifier-resolution=node --no-warnings=ExperimentalWarning ./src/index.js",
+    "start": "node --experimental-specifier-resolution=node --no-warnings=ExperimentalWarning ./src/index.js"
   },
   "author": "KirianCaumes",
   "license": "MIT",
