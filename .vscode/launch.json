@@ -2,21 +2,10 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "type": "node",
+            "name": "🪲 Debug",
+            "type": "node-terminal",
             "request": "launch",
-            "name": "Debug",
-            "runtimeExecutable": "npm",
-            "runtimeArgs": [
-                "run-script",
-                "start:debug"
-            ],
-            "program": "${workspaceFolder}/src/index.js",
-            "restart": true,
-            "console": "integratedTerminal",
-            "internalConsoleOptions": "neverOpen",
-            "skipFiles": [
-                "<node_internals>/**"
-            ],
-        }
+            "command": "npm run start:debug"
+        },
     ]
 }
