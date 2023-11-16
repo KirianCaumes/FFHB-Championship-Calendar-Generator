@@ -22,14 +22,19 @@ export default async function getIcs(req, res) {
     try {
         const equipeId = /\/equipe-([^)]+)\//gm.exec(url)[1]
 
-        const fileName = `${ICALS_FOLDER}/${equipeId}.json`
+        const fileName = `${ICALS_FOLDER}/${equipeId}.ics`
 
         // Read from cache, if file was created 1h ago max. That way, we can prevent spamming FFHB website
         if (fs.existsSync(fileName) && Math.abs(fs.statSync(fileName).birthtime.getTime() - new Date().getTime()) / 36e5 < 1) {
-            const json = fs.readFileSync(fileName)?.toString()
+            const ics = fs.readFileSync(fileName)?.toString()
 
-            if (json)
-                return ical(JSON.parse(json)).serve(res)
+            if (ics) {
+                res.writeHead(200, {
+                    'Content-Type': 'text/calendar; charset=utf-8',
+                    'Content-Disposition': 'attachment; filename="calendar.ics"',
+                })
+                return res.end(ics)
+            }
         }
 
         const competition = url.replace(/\/$/, '').split('/').at(-2)
@@ -167,9 +172,14 @@ export default async function getIcs(req, res) {
         // Save to cache
         if (!fs.existsSync(ICALS_FOLDER))
             fs.mkdirSync(ICALS_FOLDER)
-        fs.writeFileSync(fileName, JSON.stringify(ical({ timezone: 'Europe/Paris', name, events })))
 
-        return cal.serve(res)
+        fs.writeFileSync(fileName, ical({ timezone: 'Europe/Paris', name, events }).toString())
+
+        res.writeHead(200, {
+            'Content-Type': 'text/calendar; charset=utf-8',
+            'Content-Disposition': 'attachment; filename="calendar.ics"',
+        })
+        return res.end(cal.toString())
     } catch (error) {
         // eslint-disable-next-line no-console
         console.error(error)
