@@ -67,6 +67,21 @@ export default async function getIcs(req, res) {
             }),
         )
 
+        /** Main team name */
+        const teamName = (() => {
+            /** All Teams list from match */
+            const teams = rencontreList.rencontres
+                .map(rencontre => [rencontre.equipe1Libelle, rencontre.equipe2Libelle])
+                .flat()
+                .filter(x => x)
+
+            // Sort teams by occurence and return first one
+            // This will be the team of the current championship
+            return teams
+                .sort((a, b) => teams.filter(team => team === a).length - teams.filter(team => team === b).length)
+                .pop()
+        })()
+
         const events = rencontreList.rencontres
             .map((rencontre, i) => {
                 if (!rencontre.date)
@@ -78,7 +93,7 @@ export default async function getIcs(req, res) {
                 const status = (() => {
                     if (!rencontre.equipe1Score || !rencontre.equipe2Score)
                         return ''
-                    const isTeamOne = rencontre.equipe1Libelle?.toLowerCase()?.trim() === rencontreList.poule.libelle?.toLowerCase()?.trim()
+                    const isTeamOne = rencontre.equipe1Libelle?.toLowerCase()?.trim() === teamName?.toLowerCase()?.trim()
                     const teamOneScore = !Number.isNaN(parseInt(rencontre.equipe1Score, 10)) ? (parseInt(rencontre.equipe1Score, 10)) : 0
                     const teamTwoScore = !Number.isNaN(parseInt(rencontre.equipe2Score, 10)) ? (parseInt(rencontre.equipe2Score, 10)) : 0
                     if (isTeamOne ? teamOneScore > teamTwoScore : teamOneScore < teamTwoScore)
@@ -134,7 +149,7 @@ export default async function getIcs(req, res) {
         const journees = JSON.parse(rencontreList.poule.journees)
 
         /** @type {import('ical-generator').ICalCalendarData['name']} */
-        let name = rencontreList.poule.libelle || 'Équipe'
+        let name = teamName || 'Équipe'
 
         // Add years if possible
         if (journees?.[0]?.date_debut || journees?.at(-1)?.date_debut)
