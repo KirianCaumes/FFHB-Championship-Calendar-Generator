@@ -22,8 +22,12 @@ RUN sudo apt-get -y install curl
 RUN sudo apt-get -y install git
 RUN sudo apt-get update --fix-missing
 
-# install nodejs 18.x
-RUN sudo curl -sL https://deb.nodesource.com/setup_18.x | sudo bash -
-RUN sudo apt-get install -y nodejs
+# install nodejs 20.x
+RUN sudo apt-get install -y ca-certificates gnupg
+RUN sudo mkdir -p /etc/apt/keyrings  
+RUN curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
+RUN echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_20.x nodistro main" | sudo tee /etc/apt/sources.list.d/nodesource.list
+RUN sudo apt-get update 
+RUN sudo apt-get install nodejs -y
 
 WORKDIR /app_ffhbchampionshipcalendar

@@ -5,13 +5,13 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start:debug": "node --watch --experimental-specifier-resolution=node --no-warnings=ExperimentalWarning ./src/index.js",
-    "start": "node --experimental-specifier-resolution=node --no-warnings=ExperimentalWarning ./src/index.js"
+    "start:debug": "node --watch --no-warnings=ExperimentalWarning ./src/index.js",
+    "start": "node --no-warnings=ExperimentalWarning ./src/index.js"
   },
   "author": "KirianCaumes",
   "license": "MIT",
   "engines": {
-    "node": "18.x.x"
+    "node": "20.x.x"
   },
   "type": "module",
   "dependencies": {

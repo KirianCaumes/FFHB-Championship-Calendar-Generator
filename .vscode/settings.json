@@ -21,4 +21,5 @@
 		},
 	},
 	"html.format.wrapAttributes": "force-expand-multiline",
+	"javascript.preferences.importModuleSpecifierEnding": "js"
 }

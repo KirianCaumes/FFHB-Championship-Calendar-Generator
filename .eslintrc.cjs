@@ -58,6 +58,7 @@ module.exports = {
         }],
         'jsdoc/valid-types': 'off',
         'jsdoc/newline-after-description': 'off',
+        'import/extensions': ['error', 'always'],
         'no-unused-vars': ['warn', { vars: 'all', args: 'after-used', ignoreRestSiblings: true }], // Must be at the end
     },
 }

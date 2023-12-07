@@ -3,8 +3,8 @@ import ical from 'ical-generator'
 import axios from 'axios'
 import Handlebars from 'handlebars'
 import { JSDOM } from 'jsdom'
-import getCfkKey from './get-cfk-key.util'
-import decipher from './decipher.util'
+import getCfkKey from './get-cfk-key.util.js'
+import decipher from './decipher.util.js'
 
 const ICALS_FOLDER = './icals'
 

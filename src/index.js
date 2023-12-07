@@ -1,6 +1,6 @@
 import path from 'path'
 import express from 'express'
-import getIcs from './utils/get-ics.util'
+import getIcs from './utils/get-ics.util.js'
 
 const app = express()
 
