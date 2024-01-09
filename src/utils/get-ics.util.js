@@ -60,7 +60,7 @@ export default async function getIcs(req, res) {
         const details = await Promise.allSettled(
             rencontreList.rencontres.map(async rencontre => {
                 const baseUrl = url.replace(/\/$/, '').split('/').slice(0, -1).join('/')
-                const rencontreUrl = `${baseUrl}/poule-${rencontreList.poule.ext_pouleId}/rencontre-${rencontre.ext_rencontreId}`
+                const rencontreUrl = `${baseUrl}/poule-${rencontre.extPouleId ?? rencontreList.poule.ext_pouleId}/rencontre-${rencontre.ext_rencontreId}`
 
                 const { data: addressData } = await axios.request({ url: rencontreUrl })
                 const { document } = (new JSDOM(addressData)).window
