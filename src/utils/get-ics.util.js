@@ -125,6 +125,10 @@ export default async function getIcs(req, res) {
                     return /** @type {FfhbApiAddressResult} */({})
                 })()
 
+                const prefix = rencontre.phaseLibelle.toLowerCase().includes(' de coupe')
+                    ? (rencontre.phaseLibelle.toLowerCase().split(' de coupe')?.[0] ?? rencontre.phaseLibelle)
+                    : `J.${rencontre.journeeNumero}`
+
                 return /** @type {import('ical-generator').ICalEventData} */({
                     location: [
                         locations.equipement?.libelle,
@@ -144,7 +148,7 @@ export default async function getIcs(req, res) {
                     ].filter(x => x).join('\n'),
                     start: dtStart,
                     end: dtEnd,
-                    summary: `J.${rencontre.journeeNumero} : ${rencontre.equipe1Libelle || '?'} vs ${rencontre.equipe2Libelle || '?'}`,
+                    summary: `${prefix} : ${rencontre.equipe1Libelle || '?'} vs ${rencontre.equipe2Libelle || '?'}`,
                     url,
                     attachments: fileUrl ? [fileUrl] : undefined,
                 })
