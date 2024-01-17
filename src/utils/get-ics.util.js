@@ -24,8 +24,8 @@ export default async function getIcs(req, res) {
 
         const fileName = `${ICALS_FOLDER}/${equipeId}.ics`
 
-        // Read from cache, if file was created 1h ago max. That way, we can prevent spamming FFHB website
-        if (fs.existsSync(fileName) && Math.abs(fs.statSync(fileName).birthtime.getTime() - new Date().getTime()) / 36e5 < 1) {
+        // Read from cache, if file was updated 1h ago max. That way, we can prevent spamming FFHB website
+        if (fs.existsSync(fileName) && Math.abs(fs.statSync(fileName).mtime.getTime() - new Date().getTime()) / 36e5 < 1) {
             const ics = fs.readFileSync(fileName)?.toString()
 
             if (ics) {
