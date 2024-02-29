@@ -125,9 +125,14 @@ export default async function getIcs(req, res) {
                     return /** @type {FfhbApiAddressResult} */({})
                 })()
 
-                const prefix = rencontre.phaseLibelle.toLowerCase().includes(' de coupe')
-                    ? (rencontre.phaseLibelle.toLowerCase().split(' de coupe')?.[0] ?? rencontre.phaseLibelle)
-                    : `J.${rencontre.journeeNumero}`
+                const prefix = (() => {
+                    const lib = rencontre.phaseLibelle.toLowerCase()
+                    if (lib.includes(' de coupe')) // ex: '1ER TOUR DE COUPE UZZM'
+                        return (lib.split(' de coupe')?.[0] ?? rencontre.phaseLibelle)
+                    if (lib.includes(' coupe ')) // ex : '1/4 DE FINALES COUPE UZZM'
+                        return (lib.split(' coupe ')?.[0] ?? rencontre.phaseLibelle)
+                    return `J.${rencontre.journeeNumero}`
+                })()
 
                 return /** @type {import('ical-generator').ICalEventData} */({
                     location: [
