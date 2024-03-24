@@ -87,10 +87,48 @@ export default async function getIcs(req, res) {
                 .pop()
         })()
 
+        /** @type {FfhbApiJourneesResult} */
+        const journees = JSON.parse(rencontreList.poule.journees)
+
         const events = rencontreList.rencontres
             .map((rencontre, i) => {
-                if (!rencontre.date)
-                    return null
+                const prefix = (() => {
+                    const lib = rencontre.phaseLibelle.toLowerCase()
+                    if (lib.includes(' de coupe')) // ex: '1ER TOUR DE COUPE UZZM'
+                        return (lib.split(' de coupe')?.[0] ?? rencontre.phaseLibelle)
+                    if (lib.includes(' coupe ')) // ex : '1/4 DE FINALES COUPE UZZM'
+                        return (lib.split(' coupe ')?.[0] ?? rencontre.phaseLibelle)
+                    return `J.${rencontre.journeeNumero}`
+                })()
+
+                const summary = `${prefix} : ${rencontre.equipe1Libelle || '?'} vs ${rencontre.equipe2Libelle || '?'}`
+
+                const journeeUrl = rencontre.extPouleId
+                    ? `#️⃣ ${url.split('/').slice(0, -2).join('/')}/poule-${rencontre.extPouleId}/journee-${rencontre.journeeNumero}/`
+                        .replace('https://www.', '')
+                    : null
+
+                // If there's no date yet, we show a preview to the user that a match should occur this day
+                if (!rencontre.date) {
+                    const journee = journees.find(jour => jour.journee_numero.toString() === rencontre.journeeNumero)
+
+                    if (!journee || !journee.date_debut)
+                        return null
+
+                    const dt = new Date(journee.date_debut)
+                    dt.setHours(8)
+
+                    return /** @type {import('ical-generator').ICalEventData} */({
+                        description: [
+                            '⚠️ En attente de la date précise de la rencontre',
+                            journeeUrl,
+                        ].filter(x => x).join('\n'),
+                        start: dt,
+                        end: dt,
+                        summary: `🔄️ ${summary}`,
+                        url,
+                    })
+                }
 
                 const dtStart = new Date(rencontre.date)
                 const dtEnd = new Date(dtStart.getTime() + (1.5 * 60 * 60 * 1000))
@@ -125,15 +163,6 @@ export default async function getIcs(req, res) {
                     return /** @type {FfhbApiAddressResult} */({})
                 })()
 
-                const prefix = (() => {
-                    const lib = rencontre.phaseLibelle.toLowerCase()
-                    if (lib.includes(' de coupe')) // ex: '1ER TOUR DE COUPE UZZM'
-                        return (lib.split(' de coupe')?.[0] ?? rencontre.phaseLibelle)
-                    if (lib.includes(' coupe ')) // ex : '1/4 DE FINALES COUPE UZZM'
-                        return (lib.split(' coupe ')?.[0] ?? rencontre.phaseLibelle)
-                    return `J.${rencontre.journeeNumero}`
-                })()
-
                 return /** @type {import('ical-generator').ICalEventData} */({
                     location: [
                         locations.equipement?.libelle,
@@ -146,21 +175,15 @@ export default async function getIcs(req, res) {
                             : '👉 À venir',
                         fileUrl ? `🔗 ${fileUrl.replace('https://', '')}` : null,
                         referees?.length ? `🧑‍⚖️ ${new Intl.ListFormat('fr-FR', { style: 'long', type: 'conjunction' }).format(referees)}` : null,
-                        rencontre.extPouleId
-                            ? `#️⃣ ${url.split('/').slice(0, -2).join('/')}/poule-${rencontre.extPouleId}/journee-${rencontre.journeeNumero}/`
-                                .replace('https://www.', '')
-                            : null,
+                        journeeUrl,
                     ].filter(x => x).join('\n'),
                     start: dtStart,
                     end: dtEnd,
-                    summary: `${prefix} : ${rencontre.equipe1Libelle || '?'} vs ${rencontre.equipe2Libelle || '?'}`,
+                    summary,
                     url,
                     attachments: fileUrl ? [fileUrl] : undefined,
                 })
             }).filter(x => x)
-
-        /** @type {FfhbApiJourneesResult} */
-        const journees = JSON.parse(rencontreList.poule.journees)
 
         /** @type {import('ical-generator').ICalCalendarData['name']} */
         let name = teamName || 'Équipe'
