@@ -3,14 +3,22 @@
   "dockerComposeFile": "docker-compose.yml",
   "service": "ffhbchampionshipcalendar_container",
   "workspaceFolder": "/app_ffhbchampionshipcalendar",
-  "extensions": [
-    "gruntfuggly.todo-tree",
-    "sibiraj-s.vscode-scss-formatter",
-    "firefox-devtools.vscode-firefox-debug",
-    "msjsdiag.debugger-for-chrome",
-    "davidanson.vscode-markdownlint",
-    "dbaeumer.vscode-eslint",
-    "stylelint.vscode-stylelint",
-    "pflannery.vscode-versionlens"
-  ]
+  "postCreateCommand": "bash .devcontainer/init.sh",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "gruntfuggly.todo-tree",
+        "sibiraj-s.vscode-scss-formatter",
+        "firefox-devtools.vscode-firefox-debug",
+        "msjsdiag.debugger-for-chrome",
+        "davidanson.vscode-markdownlint",
+        "dbaeumer.vscode-eslint",
+        "stylelint.vscode-stylelint",
+        "pflannery.vscode-versionlens",
+        "esbenp.prettier-vscode",
+        "streetsidesoftware.code-spell-checker",
+        "streetsidesoftware.code-spell-checker-french"
+      ]
+    }
+  }
 }

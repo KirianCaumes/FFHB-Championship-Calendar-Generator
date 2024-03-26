@@ -1,13 +1,13 @@
 import path from 'path'
 import express from 'express'
-import getIcs from './utils/get-ics.util.js'
+import index from './routes/index.route.js'
 
 const app = express()
 
 app.use('/bulma', express.static(`${path.resolve()}/node_modules/bulma/css`))
 app.use(express.static('public'))
 
-app.all('*', getIcs)
+app.all('*', index)
 
 app.listen(
     process.env.PORT || 3000,

@@ -11,6 +11,6 @@ export default async function getCfkKey() {
         method: 'GET',
     })
 
-    const { document } = (new JSDOM(cfkData)).window
+    const { document } = new JSDOM(cfkData).window
     return document.body.getAttribute('data-cfk')
 }

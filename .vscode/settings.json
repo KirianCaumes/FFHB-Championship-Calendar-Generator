@@ -1,25 +1,29 @@
 {
-	"editor.formatOnSave": true,
-	"[javascript]": {
-		"editor.tabSize": 4,
-		"editor.detectIndentation": false,
-	},
-	"editor.codeActionsOnSave": {
-		"source.fixAll": "explicit"
-	},
-	"eslint.workingDirectories": [
-		"./"
-	],
-	"html.format.wrapLineLength": 0,
-	"eslint.alwaysShowStatus": true,
-	"versionlens.suggestions.showOnStartup": true,
-	"terminal.integrated.defaultProfile.linux": "bash",
-	"terminal.integrated.profiles.linux": {
-		"bash": {
-			"path": "/bin/bash",
-			"icon": "terminal-bash"
-		},
-	},
-	"html.format.wrapAttributes": "force-expand-multiline",
-	"javascript.preferences.importModuleSpecifierEnding": "js"
+  "editor.formatOnSave": true,
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[html]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "explicit"
+  },
+  "eslint.workingDirectories": ["./"],
+  "html.format.wrapLineLength": 0,
+  "json.format.enable": false,
+  "eslint.alwaysShowStatus": true,
+  "versionlens.suggestions.showOnStartup": true,
+  "terminal.integrated.defaultProfile.linux": "bash",
+  "terminal.integrated.profiles.linux": {
+    "bash": {
+      "path": "/bin/bash",
+      "icon": "terminal-bash"
+    }
+  },
+  "html.format.wrapAttributes": "force-expand-multiline",
+  "javascript.preferences.importModuleSpecifierEnding": "js"
 }

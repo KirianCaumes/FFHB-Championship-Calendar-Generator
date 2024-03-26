@@ -10,9 +10,10 @@ export default function decipher(strBase64, key) {
     let result = ''
     const keyLen = key.length
     // eslint-disable-next-line no-plusplus
-    for (let i = 0; i < str.length; i++)
+    for (let i = 0; i < str.length; i++) {
         // eslint-disable-next-line no-bitwise
         result += String.fromCharCode(str.charCodeAt(i) ^ key.charCodeAt(i % keyLen))
+    }
 
     return JSON.parse(result)
 }

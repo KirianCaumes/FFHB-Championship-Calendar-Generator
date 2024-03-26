@@ -1,232 +1,238 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="FR-fr">
+    <head>
+        <meta
+            name="viewport"
+            content="width=device-width"
+        />
+        <meta charset="utf-8" />
+        <title>FFHB Générateur Calendrier Championnat</title>
+        <meta
+            name="robots"
+            content="noindex"
+        />
+        <link
+            rel="stylesheet"
+            href="/bulma/bulma.min.css"
+        />
+        <link
+            rel="icon"
+            href="favicon.png"
+            sizes="32x32"
+        />
+        <meta
+            name="description"
+            content="Générez un lien à synchroniser contenant l'ensemble du championnat de votre équipe FFHB."
+        />
+        <meta
+            property="og:type"
+            content="website"
+        />
+        <meta
+            property="og:locale"
+            content="FR-fr"
+        />
+        <meta
+            property="og:title"
+            content="FFHB Générateur Calendrier Championnat"
+        />
+        <meta
+            property="og:description"
+            content="Générez un lien à synchroniser contenant l'ensemble du championnat de votre équipe FFHB."
+        />
+        <meta
+            property="og:url"
+            content="https://ffhb-champ-calendar-generator.kiriancaumes.fr/"
+        />
+        <style>
+            .required:after {
+                content: ' *';
+                color: #cc0000;
+            }
+        </style>
+    </head>
 
-<head>
-    <meta
-        name="viewport"
-        content="width=device-width"
-    >
-    <meta charset="utf-8" />
-    <title>FFHB Générateur Calendrier Championnat</title>
-    <meta
-        name="robots"
-        content="noindex"
-    />
-    <link
-        rel="stylesheet"
-        href="/bulma/bulma.min.css"
-    />
-    <link
-        rel="icon"
-        href="favicon.png"
-        sizes="32x32"
-    />
-    <meta
-        name="description"
-        content="Générez un lien à synchroniser contenant l'ensemble du championnat de votre équipe FFHB."
-    >
-    <meta
-        property="og:type"
-        content="website"
-    >
-    <meta
-        property="og:locale"
-        content="FR-fr"
-    >
-    <meta
-        property="og:title"
-        content="FFHB Générateur Calendrier Championnat"
-    >
-    <meta
-        property="og:description"
-        content="Générez un lien à synchroniser contenant l'ensemble du championnat de votre équipe FFHB."
-    >
-    <meta
-        property="og:url"
-        content="https://ffhb-champ-calendar-generator.kiriancaumes.fr/"
-    >
-    <style>
-        .required:after {
-            content: " *";
-            color: #CC0000;
-        }
-    </style>
-</head>
-
-<body>
-    <section class="section">
-        <div class="container">
-            <h1 class="title is-4">
-                FFHB Générateur Calendrier Championnat
-            </h1>
-            <h2 class="subtitle">
-                Générez un lien à synchroniser contenant l'ensemble du championnat de votre équipe FFHB. À synchroniser sur votre agenda Google par exemple.
-            </h2>
-            <form onsubmit="addLinkToClipboard(event)">
-                <div class="field">
-                    <label
-                        class="label required"
-                        for="url"
-                    >
-                        URL
-                    </label>
-                    <div class="control">
-                        <input
-                            class="input"
-                            type="text"
-                            id="url-input"
-                            name="url"
-                            type="url"
-                            placeholder="https://www.ffhandball.fr/competitions/saison-XXXX-XXXX-XX/XXXXXX/XXXXX-XXXX/equipe-XXXX/"
-                            required
-                            pattern="https:\/\/www\.ffhandball\.fr\/competitions\/saison-.*\/.*\/.*\/equipe-\d+\/$"
-                            onchange="setLinkInputState()"
-                        >
-                    </div>
-                    <p
-                        id="help-url-invalid"
-                        class="help is-danger"
-                        style="display: none;"
-                    >
-                        Le lien saisi ne respecte pas la forme : "https://www.ffhandball.fr/competitions/saison-XXXX-XXXX-XX/XXXXXX/XXXXX-XXXX/equipe-XXXX/"
-                    </p>
-                    <p class="help">L'URL <b>exact</b> des résultats de votre championnat. Veuillez bien sélectionner votre club via le menu déroulant "Filtrer par club" sur le site de la FFHB.</p>
-                </div>
-                <div class="field">
-                    <label
-                        class="label"
-                        for="title"
-                    >
-                        Libellé
-                    </label>
-                    <div class="control">
-                        <input
-                            class="input"
-                            type="text"
-                            id="title-input"
-                            name="title"
-                            placeholder="Libellé"
-                            minlength="1"
-                            maxlength="255"
-                            onchange="setLinkInputState()"
-                        >
-                    </div>
-                    <p class="help">(Optionnel) Libellé à donnée pour votre calendrier.</p>
-                </div>
-                <div class="field-body">
-                    <div class="field is-expanded">
+    <body>
+        <section class="section">
+            <div class="container">
+                <h1 class="title is-4">FFHB Générateur Calendrier Championnat</h1>
+                <h2 class="subtitle">
+                    Générez un lien à synchroniser contenant l'ensemble du championnat de votre équipe FFHB. À synchroniser sur votre agenda
+                    Google par exemple.
+                </h2>
+                <form onsubmit="addLinkToClipboard(event)">
+                    <div class="field">
                         <label
-                            class="label"
-                            for="link"
+                            class="label required"
+                            for="url"
                         >
-                            Lien du calendrier généré
+                            URL
                         </label>
-                        <div class="field has-addons">
-                            <div class="control is-expanded">
-                                <input
-                                    class="input"
-                                    id="link-input"
-                                    name="link"
-                                    type="url"
-                                    placeholder="Lien du calendrier généré"
-                                    readonly
-                                >
-                            </div>
-                            <div class="control">
-                                <button
-                                    class="button is-link"
-                                    type="submit"
-                                    disabled
-                                    id="copy-button"
-                                >
-                                    <span class="icon">
-                                        📋
-                                    </span>
-                                    <span>Copier</span>
-                                </button>
-                            </div>
+                        <div class="control">
+                            <input
+                                class="input"
+                                type="text"
+                                id="url-input"
+                                name="url"
+                                type="url"
+                                placeholder="https://www.ffhandball.fr/competitions/saison-XXXX-XXXX-XX/XXXXXX/XXXXX-XXXX/equipe-XXXX/"
+                                required
+                                pattern="https:\/\/www\.ffhandball\.fr\/competitions\/saison-.*\/.*\/.*\/equipe-\d+\/$"
+                                onchange="setLinkInputState()"
+                            />
                         </div>
                         <p
-                            id="help-link-copied"
-                            class="help is-success"
-                            style="display: none;"
+                            id="help-url-invalid"
+                            class="help is-danger"
+                            style="display: none"
                         >
-                            Lien copié !
+                            Le lien saisi ne respecte pas la forme :
+                            "https://www.ffhandball.fr/competitions/saison-XXXX-XXXX-XX/XXXXXX/XXXXX-XXXX/equipe-XXXX/"
+                        </p>
+                        <p class="help">
+                            L'URL <b>exact</b> des résultats de votre championnat. Veuillez bien sélectionner votre club via le menu
+                            déroulant "Filtrer par club" sur le site de la FFHB.
                         </p>
                     </div>
-                </div>
+                    <div class="field">
+                        <label
+                            class="label"
+                            for="title"
+                        >
+                            Libellé
+                        </label>
+                        <div class="control">
+                            <input
+                                class="input"
+                                type="text"
+                                id="title-input"
+                                name="title"
+                                placeholder="Libellé"
+                                minlength="1"
+                                maxlength="255"
+                                onchange="setLinkInputState()"
+                            />
+                        </div>
+                        <p class="help">(Optionnel) Libellé à donnée pour votre calendrier.</p>
+                    </div>
+                    <div class="field-body">
+                        <div class="field is-expanded">
+                            <label
+                                class="label"
+                                for="link"
+                            >
+                                Lien du calendrier généré
+                            </label>
+                            <div class="field has-addons">
+                                <div class="control is-expanded">
+                                    <input
+                                        class="input"
+                                        id="link-input"
+                                        name="link"
+                                        type="url"
+                                        placeholder="Lien du calendrier généré"
+                                        readonly
+                                    />
+                                </div>
+                                <div class="control">
+                                    <button
+                                        class="button is-link"
+                                        type="submit"
+                                        disabled
+                                        id="copy-button"
+                                    >
+                                        <span class="icon"> 📋 </span>
+                                        <span>Copier</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <p
+                                id="help-link-copied"
+                                class="help is-success"
+                                style="display: none"
+                            >
+                                Lien copié !
+                            </p>
+                        </div>
+                    </div>
 
-                <br />
-                <p>👉 Après avoir copié le lien généré ci-dessus, vous pouvez l'ajouter à votre calendrier Google en le collant sur <a
-                        href="https://calendar.google.com/calendar/u/0/r/settings/addbyurl"
-                        target="_blank"
-                        rel="noreferrer"
-                    >cette page</a>. Pour utiliser un autre calendrier que Google, référez vous à la documentation adéquate.
-                </p>
-                <br />
-                <br />
-                <p class="is-size-7">
-                    Projet non lié à la FFHB - Par CAUMES Kirian - <a
-                        href="https://github.com/KirianCaumes/FFHB-Championship-Calendar-Generator"
-                        target="_blank"
-                        rel="noreferrer"
-                    >
-                        Github
-                    </a>
-                </p>
-            </form>
-        </div>
-    </section>
-</body>
+                    <br />
+                    <p>
+                        👉 Après avoir copié le lien généré ci-dessus, vous pouvez l'ajouter à votre calendrier Google en le collant sur
+                        <a
+                            href="https://calendar.google.com/calendar/u/0/r/settings/addbyurl"
+                            target="_blank"
+                            rel="noreferrer"
+                            >cette page</a
+                        >. Pour utiliser un autre calendrier que Google, référez vous à la documentation adéquate.
+                    </p>
+                    <br />
+                    <br />
+                    <p class="is-size-7">
+                        Projet non lié à la FFHB - Par CAUMES Kirian -
+                        <a
+                            href="https://github.com/KirianCaumes/FFHB-Championship-Calendar-Generator"
+                            target="_blank"
+                            rel="noreferrer"
+                        >
+                            Github
+                        </a>
+                    </p>
+                </form>
+            </div>
+        </section>
+    </body>
 
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        setLinkInputState()
-    })
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            setLinkInputState()
+        })
 
-    const urlInputElement = /** @type {HTMLInputElement} */(document.getElementById('url-input'))
-    const titleInputElement = /** @type {HTMLInputElement} */(document.getElementById('title-input'))
-    const linkInputElement = /** @type {HTMLInputElement} */(document.getElementById('link-input'))
-    const copyButtonElement = /** @type {HTMLInputElement} */(document.getElementById('copy-button'))
-    const helpLinkCopiedElement = /** @type {HTMLInputElement} */(document.getElementById('help-link-copied'))
-    const helpUrlInvalidElement = /** @type {HTMLInputElement} */(document.getElementById('help-url-invalid'))
+        const urlInputElement = /** @type {HTMLInputElement} */ (document.getElementById('url-input'))
+        const titleInputElement = /** @type {HTMLInputElement} */ (document.getElementById('title-input'))
+        const linkInputElement = /** @type {HTMLInputElement} */ (document.getElementById('link-input'))
+        const copyButtonElement = /** @type {HTMLInputElement} */ (document.getElementById('copy-button'))
+        const helpLinkCopiedElement = /** @type {HTMLInputElement} */ (document.getElementById('help-link-copied'))
+        const helpUrlInvalidElement = /** @type {HTMLInputElement} */ (document.getElementById('help-url-invalid'))
 
-    /**
-     * Update state of input link / copy button
-     */
-    async function setLinkInputState() {
-        if (urlInputElement.value) {
-            if (urlInputElement.checkValidity()) {
+        /**
+         * Update state of input link / copy button
+         */
+        async function setLinkInputState() {
+            if (urlInputElement.value) {
+                if (urlInputElement.checkValidity()) {
+                    urlInputElement.classList.remove('is-danger')
+                    helpUrlInvalidElement.style.display = 'none'
+                    linkInputElement.value = `${window.location.origin}?${new URLSearchParams(
+                        Object.fromEntries(
+                            Object.entries({
+                                url: urlInputElement.value,
+                                title: titleInputElement.value,
+                            }).filter(([_, v]) => v),
+                        ),
+                    ).toString()}`
+                    copyButtonElement.disabled = false
+                } else {
+                    urlInputElement.classList.add('is-danger')
+                    helpUrlInvalidElement.style.display = 'block'
+                    linkInputElement.value = ''
+                    copyButtonElement.disabled = true
+                }
+            } else {
                 urlInputElement.classList.remove('is-danger')
                 helpUrlInvalidElement.style.display = 'none'
-                linkInputElement.value = `${window.location.origin}?${new URLSearchParams(
-                    Object.fromEntries(Object.entries({
-                        url: urlInputElement.value,
-                        title: titleInputElement.value,
-                    }).filter(([_, v]) => v))).toString()}`
-                copyButtonElement.disabled = false
-            } else {
-                urlInputElement.classList.add('is-danger')
-                helpUrlInvalidElement.style.display = 'block'
-                linkInputElement.value = ''
                 copyButtonElement.disabled = true
             }
-        } else {
-            urlInputElement.classList.remove('is-danger')
-            helpUrlInvalidElement.style.display = 'none'
-            copyButtonElement.disabled = true
         }
-    }
 
-    /**
-     * Add link to clipboard
-     * @param {Event} ev Form event
-     */
-    async function addLinkToClipboard(ev) {
-        ev.preventDefault()
-        await navigator.clipboard.writeText(linkInputElement.value)
-        helpLinkCopiedElement.style.display = 'block'
-    }
-</script>
-
+        /**
+         * Add link to clipboard
+         * @param {Event} ev Form event
+         */
+        async function addLinkToClipboard(ev) {
+            ev.preventDefault()
+            await navigator.clipboard.writeText(linkInputElement.value)
+            helpLinkCopiedElement.style.display = 'block'
+        }
+    </script>
 </html>

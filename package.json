@@ -3,31 +3,42 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start:debug": "node --watch --no-warnings=ExperimentalWarning ./src/index.js",
-    "start": "node --no-warnings=ExperimentalWarning ./src/index.js"
-  },
   "author": "KirianCaumes",
   "license": "MIT",
   "engines": {
     "node": "20.x.x"
   },
   "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start:debug": "node --watch --no-warnings=ExperimentalWarning ./src/index.js",
+    "start": "node --no-warnings=ExperimentalWarning ./src/index.js",
+    "eslint:fix": "eslint src --fix",
+    "eslint": "eslint src",
+    "prettier": "npx prettier --check . '!./data'",
+    "prettier:fix": "npx prettier --write . '!./data'",
+    "cspell": "npx cspell ./ --no-progress --dot --gitignore",
+    "prepare": "husky"
+  },
   "dependencies": {
     "axios": "^1.6.8",
     "bulma": "^1.0.0",
-    "express": "^4.19.1",
-    "handlebars": "^4.7.8",
+    "express": "^4.19.2",
     "ical-generator": "^7.0.0",
     "jsdom": "^24.0.0"
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.24.1",
+    "@cspell/dict-fr-fr": "^2.2.2",
+    "cspell": "^8.6.1",
     "eslint": "^8.57.0",
     "eslint-config-airbnb": "^19.0.4",
+    "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-jsdoc": "^48.2.1",
-    "eslint-plugin-jsx-a11y": "^6.8.0"
+    "eslint-plugin-jsx-a11y": "^6.8.0",
+    "husky": "^9.0.11",
+    "lint-staged": "^15.2.2",
+    "prettier": "^3.2.5"
   }
 }
