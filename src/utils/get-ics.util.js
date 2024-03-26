@@ -178,7 +178,7 @@ export default async function getIcs({ url, title }) {
                 dt.setHours(8)
 
                 return {
-                    description: ['⚠️ En attente de la date précise de la rencontre', journeeUrl].filter(x => x).join('\n'),
+                    description: ["⚠️ En attente d'une date précise pour la rencontre", journeeUrl].filter(x => x).join('\n'),
                     start: dt,
                     end: dt,
                     summary: `🔄️ ${summary}`,
