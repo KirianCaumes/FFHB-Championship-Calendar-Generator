@@ -36,7 +36,7 @@ export default async function getIcs({ url, title }) {
     const competitionId = url.replace(/\/$/, '').split('/').at(-2)
 
     // Get rencontre list data
-    const { data: dataRencontreListData } = await axios.request({
+    const { data: rencontreListData } = await axios.request({
         url: 'https://www.ffhandball.fr/wp-json/competitions/v1/computeBlockAttributes',
         method: 'GET',
         params: {
@@ -50,7 +50,7 @@ export default async function getIcs({ url, title }) {
     const cfkKey = await getCfkKey()
 
     /** Deciphered rencontre list */
-    const rencontreList = /** @type {FfhbApiCompetitionListResult} */ (decipher(dataRencontreListData, cfkKey))
+    const rencontreList = /** @type {FfhbApiCompetitionListResult} */ (decipher(rencontreListData, cfkKey))
 
     if (rencontreList.rencontres?.length === 0) {
         throw new Error(`Aucune rencontres n'a été trouvé pour l'URL ${url} `)
@@ -95,12 +95,46 @@ export default async function getIcs({ url, title }) {
     })()
 
     /**
-     * Global informations about journees (date and numero)
-     * @type {FfhbApiJourneesResult}
+     * Global informations about journees (date and numero).
+     * Each journees is associated to a different pouleId (because some teams have multiple poules).
+     * @type {{ [x: string]: FfhbApiJourneesResult }}
      */
-    const journees = JSON.parse(rencontreList.poule.journees)
+    const journeesCache = {
+        [rencontreList.poule.ext_pouleId]: JSON.parse(rencontreList.poule.journees),
+        // Check all rencontre to see if there is different poule(s)
+        ...(
+            await Promise.all(
+                rencontreList.rencontres
+                    .map(rencontre => rencontre.extPouleId)
+                    // Filter to get only not default poule
+                    .filter(
+                        (extPouleId, index, array) => array.indexOf(extPouleId) === index && extPouleId !== rencontreList.poule.ext_pouleId,
+                    )
+                    .map(async extPouleId => {
+                        // Get rencontre list data
+                        const { data: newRencontreListData } = await axios.request({
+                            url: 'https://www.ffhandball.fr/wp-json/competitions/v1/computeBlockAttributes',
+                            method: 'GET',
+                            params: {
+                                block: 'competitions---rencontre-list',
+                                url_competition: competitionId,
+                                ext_poule_id: extPouleId,
+                            },
+                        })
 
-    /** Events to be set in the calendar */
+                        /** Deciphered rencontre list */
+                        const newRencontreList = /** @type {FfhbApiCompetitionListResult} */ (decipher(newRencontreListData, cfkKey))
+
+                        return { [extPouleId]: /** @type {FfhbApiJourneesResult} */ (JSON.parse(newRencontreList.poule.journees)) }
+                    }),
+            )
+        ).reduce((prev, curr) => ({ ...prev, ...curr }), {}),
+    }
+
+    /**
+     * Events to be set in the calendar
+     * @type {import('ical-generator').ICalEventData[]}
+     */
     const events = rencontreList.rencontres
         .map((rencontre, i) => {
             /** Prefix for the summary event */
@@ -131,7 +165,9 @@ export default async function getIcs({ url, title }) {
             // If there's no date yet, we show a preview to the user that a match should occur this day
             if (!rencontre.date) {
                 /** Corresponding journee to the rencontre with no date */
-                const journee = journees.find(jour => jour.journee_numero.toString() === rencontre.journeeNumero)
+                const journee = journeesCache[rencontre.extPouleId]?.find(
+                    jour => jour.journee_numero.toString() === rencontre.journeeNumero,
+                )
 
                 if (!journee || !journee.date_debut) {
                     return null
@@ -141,13 +177,13 @@ export default async function getIcs({ url, title }) {
                 const dt = new Date(journee.date_debut)
                 dt.setHours(8)
 
-                return /** @type {import('ical-generator').ICalEventData} */ ({
+                return {
                     description: ['⚠️ En attente de la date précise de la rencontre', journeeUrl].filter(x => x).join('\n'),
                     start: dt,
                     end: dt,
                     summary: `🔄️ ${summary}`,
                     url,
-                })
+                }
             }
 
             /** Start date of the rencontre */
@@ -192,7 +228,7 @@ export default async function getIcs({ url, title }) {
                 return /** @type {FfhbApiAddressResult} */ ({})
             })()
 
-            return /** @type {import('ical-generator').ICalEventData} */ ({
+            return {
                 location: [locations.equipement?.libelle, locations.equipement?.rue, locations.equipement?.ville]
                     .map(location => location?.trim())
                     .filter(x => !!x)
@@ -213,7 +249,7 @@ export default async function getIcs({ url, title }) {
                 summary,
                 url,
                 attachments: fileUrl ? [fileUrl] : undefined,
-            })
+            }
         })
         .filter(x => x)
 
@@ -223,9 +259,14 @@ export default async function getIcs({ url, title }) {
      */
     let name = teamName || 'Équipe'
 
+    /** First journee date debut cache */
+    const firstDateDebut = journeesCache?.[Object.keys(journeesCache)[0]]?.[0]?.date_debut
+    /** Last journee date debut cache */
+    const lastDateDebut = journeesCache?.[Object.keys(journeesCache).at(-1)]?.at(-1)?.date_debut
+
     // Add years if possible to the calendar name
-    if (journees?.[0]?.date_debut || journees?.at(-1)?.date_debut) {
-        name += ` (${[new Date(journees?.[0]?.date_debut)?.getFullYear(), new Date(journees?.at(-1)?.date_debut)?.getFullYear()]
+    if (firstDateDebut || lastDateDebut) {
+        name += ` (${[new Date(firstDateDebut)?.getFullYear(), new Date(lastDateDebut)?.getFullYear()]
             .filter((value, index, self) => value && self.indexOf(value) === index)
             .join(' - ')})`
     }
