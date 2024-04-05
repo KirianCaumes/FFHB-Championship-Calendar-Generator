@@ -1,14 +1,27 @@
 {
   "name": "ffhb-championship-calendar-generator",
+  "description": "Generate a link to synchronize content of the entire championship of your FFHB team. To synchronize on your Google calendar for example. 🗓️",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
   "author": "KirianCaumes",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KirianCaumes/Emptio.git"
+  },
+  "bugs": {
+    "url": "https://github.com/KirianCaumes/Emptio/issues"
+  },
+  "homepage": "https://github.com/KirianCaumes/Emptio#readme",
   "engines": {
     "node": "20.x.x"
   },
   "type": "module",
+  "funding": [
+    {
+      "type": "paypal",
+      "url": "https://www.paypal.me/KirianCaumes"
+    }
+  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start:debug": "node --watch --no-warnings=ExperimentalWarning ./src/index.js",
