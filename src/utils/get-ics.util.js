@@ -87,7 +87,7 @@ export default async function getIcs({ url, title }) {
         const teams = rencontreList.rencontres
             .map(rencontre => [rencontre.equipe1Libelle, rencontre.equipe2Libelle])
             .flat()
-            .filter(x => x)
+            .filter(x => !!x)
 
         // Sort teams by occurrence and return first one
         // This will be the team of the current championship
@@ -156,7 +156,7 @@ export default async function getIcs({ url, title }) {
 
             /** Journee url to be displayed in event content */
             const journeeUrl = rencontre.extPouleId
-                ? `#️⃣ ${url.split('/').slice(0, -2).join('/')}/poule-${rencontre.extPouleId}/journee-${rencontre.journeeNumero}/`.replace(
+                ? `${url.split('/').slice(0, -2).join('/')}/poule-${rencontre.extPouleId}/journee-${rencontre.journeeNumero}/`.replace(
                       'https://www.',
                       '',
                   )
@@ -178,7 +178,9 @@ export default async function getIcs({ url, title }) {
                 dt.setHours(8)
 
                 return {
-                    description: ["⚠️ En attente d'une date précise pour la rencontre", journeeUrl].filter(x => x).join('\n'),
+                    description: ["⚠️ En attente d'une date précise pour la rencontre", journeeUrl ? `#️⃣ ${journeeUrl}` : null]
+                        .filter(x => !!x)
+                        .join('\n'),
                     start: dt,
                     end: dt,
                     summary: `🔄️ ${summary}`,
@@ -217,7 +219,7 @@ export default async function getIcs({ url, title }) {
                     : null
 
             /** The 0 or more arbitres of the journee */
-            const referees = [rencontre.arbitre1, rencontre.arbitre2].filter(x => x) ?? []
+            const referees = [rencontre.arbitre1, rencontre.arbitre2].filter(x => !!x) ?? []
 
             /** Location of the rencontre by the details results */
             const locations = (() => {
@@ -229,8 +231,13 @@ export default async function getIcs({ url, title }) {
             })()
 
             return {
-                location: [locations.equipement?.libelle, locations.equipement?.rue, locations.equipement?.ville]
-                    .map(location => location?.trim())
+                location: [
+                    locations.equipement?.libelle,
+                    locations.equipement?.rue,
+                    locations.equipement?.codePostal,
+                    locations.equipement?.ville,
+                ]
+                    .map(x => x?.trim())
                     .filter(x => !!x)
                     .join(', ')
                     .toUpperCase(),
@@ -240,9 +247,9 @@ export default async function getIcs({ url, title }) {
                         : '👉 À venir',
                     fileUrl ? `🔗 ${fileUrl.replace('https://', '')}` : null,
                     referees?.length ? `🧑‍⚖️ ${new Intl.ListFormat('fr-FR', { style: 'long', type: 'conjunction' }).format(referees)}` : null,
-                    journeeUrl,
+                    journeeUrl ? `#️⃣ ${journeeUrl}` : null,
                 ]
-                    .filter(x => x)
+                    .filter(x => !!x)
                     .join('\n'),
                 start: dtStart,
                 end: dtEnd,
@@ -251,7 +258,7 @@ export default async function getIcs({ url, title }) {
                 attachments: fileUrl ? [fileUrl] : undefined,
             }
         })
-        .filter(x => x)
+        .filter(x => !!x)
 
     /**
      * Name of the calendar
