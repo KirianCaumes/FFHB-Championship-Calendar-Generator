@@ -4,6 +4,8 @@ import index from './routes/index.route.js'
 
 const app = express()
 
+app.disable('x-powered-by')
+
 app.use('/bulma', express.static(`${path.resolve()}/node_modules/bulma/css`))
 app.use(express.static('public'))
 
