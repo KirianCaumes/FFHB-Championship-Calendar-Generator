@@ -5,7 +5,7 @@ import axios from 'axios'
 import { JSDOM } from 'jsdom'
 import getCfkKey from 'utils/get-cfk-key.util'
 import decipher from 'utils/decipher.util'
-import type { FfhbApiAddressResult, FfhbApiCompetitionListResult, FfhbApiJourneesResult } from 'interfaces/ffhb-api-result.type'
+import type { FfhbApiAddressResult, FfhbApiCompetitionListResult, FfhbApiJourneesResult } from 'interfaces/ffhb-api-result.interface'
 import type { AxiosRequestConfig } from 'axios'
 import type { ICalCalendarData, ICalEventData } from 'ical-generator'
 
@@ -50,7 +50,7 @@ export default async function getIcs({
     }
 
     /** Competition Id from URL */
-    const competitionId = url.replace(/\/$/, '').split('/').at(-2)
+    const competitionId = url.replace(/\/$/, '').split('/').at(-2)!
 
     /** Key used to to decipher */
     const cfkKey = await getCfkKey()

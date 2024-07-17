@@ -1,7 +1,7 @@
 import { readFile } from 'fs/promises'
 import getIcs from 'utils/get-ics.util'
 import type { Request, Response } from 'express'
-import type { QueryType } from 'interfaces/query.type'
+import type QueryType from 'interfaces/query.interface'
 
 /**
  * Home route

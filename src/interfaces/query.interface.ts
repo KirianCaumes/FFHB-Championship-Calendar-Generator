@@ -1,4 +1,4 @@
-export interface QueryType {
+export default interface QueryType {
     /** Url */
     url: string
     /** Title */
