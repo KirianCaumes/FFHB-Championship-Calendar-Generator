@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "baseUrl": "./src",
+    "target": "ES2023",
+    "strict": true,
+    "esModuleInterop": true
+  },
+  "include": ["src", ".eslintrc.cjs", ".lintstagedrc.cjs", ".prettierrc.cjs"]
+}

@@ -3,14 +3,13 @@ import { JSDOM } from 'jsdom'
 
 /**
  * Get CFK key to decipher
- * @returns {Promise<string>} Key
  */
-export default async function getCfkKey() {
+export default async function getCfkKey(): Promise<string> {
     const { data: cfkData } = await axios.request({
         url: 'https://www.ffhandball.fr/',
         method: 'GET',
     })
 
     const { document } = new JSDOM(cfkData).window
-    return document.body.getAttribute('data-cfk')
+    return document.body.getAttribute('data-cfk')!
 }

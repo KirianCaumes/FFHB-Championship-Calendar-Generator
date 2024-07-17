@@ -1,6 +1,6 @@
 import path from 'path'
 import express from 'express'
-import index from './routes/index.route.js'
+import index from 'routes/index.route'
 
 const app = express()
 

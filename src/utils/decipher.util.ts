@@ -1,11 +1,10 @@
 /**
  * Decipher data from API
  * {@link https://www.ffhandball.fr/wp-content/plugins/smartfire-blocks-project-library/build/static/js/shared/utils.ts}
- * @param {string} strBase64 strBase64
- * @param {string} key key
- * @returns {object} Json
+ * @param strBase64 strBase64
+ * @param key key
  */
-export default function decipher(strBase64, key) {
+export default function decipher<T = Record<string, unknown>>(strBase64: string, key: string): T {
     const str = Buffer.from(strBase64, 'base64').toString()
     let result = ''
     const keyLen = key.length

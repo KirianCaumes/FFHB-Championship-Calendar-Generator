@@ -29,5 +29,6 @@ module.exports = {
         'gitmojis',
         'airbnb',
         'paypal',
+        'lintstagedrc',
     ],
 }

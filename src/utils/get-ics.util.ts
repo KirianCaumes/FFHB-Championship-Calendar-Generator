@@ -1,23 +1,40 @@
-import { mkdir, readFile, stat, writeFile } from 'fs/promises'
+import { mkdir, stat, readFile, writeFile } from 'fs/promises'
 import { existsSync } from 'fs'
 import ical from 'ical-generator'
 import axios from 'axios'
 import { JSDOM } from 'jsdom'
-import getCfkKey from './get-cfk-key.util.js'
-import decipher from './decipher.util.js'
+import getCfkKey from 'utils/get-cfk-key.util'
+import decipher from 'utils/decipher.util'
+import type { FfhbApiAddressResult, FfhbApiCompetitionListResult, FfhbApiJourneesResult } from 'interfaces/ffhb-api-result.type'
+import type { AxiosRequestConfig } from 'axios'
+import type { ICalCalendarData, ICalEventData } from 'ical-generator'
 
 const ICALS_FOLDER = './icals'
 
 /**
- * Get ics
- * @param {object} params Params
- * @param {string} params.url Url
- * @param {string} params.title Title
- * @returns {Promise<string>} ICS file
+ * Request from FFHB API
+ * @param config config
+ * @param cfkKey cfkKey
  */
-export default async function getIcs({ url, title }) {
+const request = async <T = string>(config: AxiosRequestConfig, cfkKey: string): Promise<T> => {
+    const { data } = await axios.request(config)
+    return decipher<T>(data, cfkKey)
+}
+
+/**
+ * Get ics
+ */
+export default async function getIcs({
+    url,
+    title,
+}: {
+    /** Url */
+    url: string
+    /** Title */
+    title: string
+}): Promise<string> {
     /** Equipe Id from URL */
-    const equipeId = /\/equipe-([^)]+)\//gm.exec(url)[1]
+    const equipeId = /\/equipe-([^)]+)\//gm.exec(url)![1]
 
     /** Path to ICS file */
     const filePath = `${ICALS_FOLDER}/${equipeId}.ics`
@@ -35,22 +52,22 @@ export default async function getIcs({ url, title }) {
     /** Competition Id from URL */
     const competitionId = url.replace(/\/$/, '').split('/').at(-2)
 
-    // Get rencontre list data
-    const { data: rencontreListData } = await axios.request({
-        url: 'https://www.ffhandball.fr/wp-json/competitions/v1/computeBlockAttributes',
-        method: 'GET',
-        params: {
-            block: 'competitions---rencontre-list',
-            url_competition: competitionId,
-            ext_equipe_id: equipeId,
-        },
-    })
-
     /** Key used to to decipher */
     const cfkKey = await getCfkKey()
 
-    /** Deciphered rencontre list */
-    const rencontreList = /** @type {FfhbApiCompetitionListResult} */ (decipher(rencontreListData, cfkKey))
+    /** Get rencontre list data */
+    const rencontreList = await request<FfhbApiCompetitionListResult>(
+        {
+            url: 'https://www.ffhandball.fr/wp-json/competitions/v1/computeBlockAttributes',
+            method: 'GET',
+            params: {
+                block: 'competitions---rencontre-list',
+                url_competition: competitionId,
+                ext_equipe_id: equipeId,
+            },
+        },
+        cfkKey,
+    )
 
     if (rencontreList.rencontres?.length === 0) {
         throw new Error(`Aucune rencontres n'a été trouvé pour l'URL ${url} `)
@@ -69,12 +86,9 @@ export default async function getIcs({ url, title }) {
             // Convert HTML string to DOM
             const { document } = new JSDOM(addressData).window
 
-            /**
-             * Address data found ont the page
-             * @type {FfhbApiAddressResult}
-             */
-            const address = JSON.parse(
-                document.querySelector('smartfire-component[name="competitions---rencontre-salle"]').getAttribute('attributes'),
+            /** Address data found ont the page */
+            const address: FfhbApiAddressResult = JSON.parse(
+                document.querySelector('smartfire-component[name="competitions---rencontre-salle"]')?.getAttribute('attributes') ?? '{}',
             )
 
             return { address }
@@ -97,10 +111,9 @@ export default async function getIcs({ url, title }) {
     /**
      * Global informations about journees (date and numero).
      * Each journees is associated to a different pouleId (because some teams have multiple poules).
-     * @type {{ [x: string]: FfhbApiJourneesResult }}
      */
-    const journeesCache = {
-        [rencontreList.poule.ext_pouleId]: JSON.parse(rencontreList.poule.journees),
+    const journeesCache: { [x: string]: Array<FfhbApiJourneesResult> } = {
+        [rencontreList.poule.ext_pouleId]: JSON.parse(rencontreList.poule.journees) as Array<FfhbApiJourneesResult>,
         // Check all rencontre to see if there is different poule(s)
         ...(
             await Promise.all(
@@ -111,21 +124,21 @@ export default async function getIcs({ url, title }) {
                         (extPouleId, index, array) => array.indexOf(extPouleId) === index && extPouleId !== rencontreList.poule.ext_pouleId,
                     )
                     .map(async extPouleId => {
-                        // Get rencontre list data
-                        const { data: newRencontreListData } = await axios.request({
-                            url: 'https://www.ffhandball.fr/wp-json/competitions/v1/computeBlockAttributes',
-                            method: 'GET',
-                            params: {
-                                block: 'competitions---rencontre-list',
-                                url_competition: competitionId,
-                                ext_poule_id: extPouleId,
+                        /** Get rencontre list data */
+                        const newRencontreList = await request<FfhbApiCompetitionListResult>(
+                            {
+                                url: 'https://www.ffhandball.fr/wp-json/competitions/v1/computeBlockAttributes',
+                                method: 'GET',
+                                params: {
+                                    block: 'competitions---rencontre-list',
+                                    url_competition: competitionId,
+                                    ext_poule_id: extPouleId,
+                                },
                             },
-                        })
+                            cfkKey,
+                        )
 
-                        /** Deciphered rencontre list */
-                        const newRencontreList = /** @type {FfhbApiCompetitionListResult} */ (decipher(newRencontreListData, cfkKey))
-
-                        return { [extPouleId]: /** @type {FfhbApiJourneesResult} */ (JSON.parse(newRencontreList.poule.journees)) }
+                        return { [extPouleId]: JSON.parse(newRencontreList.poule.journees) as Array<FfhbApiJourneesResult> }
                     }),
             )
         ).reduce((prev, curr) => ({ ...prev, ...curr }), {}),
@@ -133,9 +146,8 @@ export default async function getIcs({ url, title }) {
 
     /**
      * Events to be set in the calendar
-     * @type {import('ical-generator').ICalEventData[]}
      */
-    const events = rencontreList.rencontres
+    const events: Array<ICalEventData> = rencontreList.rencontres
         .map((rencontre, i) => {
             /** Prefix for the summary event */
             const prefix = (() => {
@@ -227,7 +239,7 @@ export default async function getIcs({ url, title }) {
                 if (address.status === 'fulfilled') {
                     return address.value.address
                 }
-                return /** @type {FfhbApiAddressResult} */ ({})
+                return {} as FfhbApiAddressResult
             })()
 
             return {
@@ -262,14 +274,13 @@ export default async function getIcs({ url, title }) {
 
     /**
      * Name of the calendar
-     * @type {import('ical-generator').ICalCalendarData['name']}
      */
-    let name = teamName || 'Équipe'
+    let name: ICalCalendarData['name'] = teamName || 'Équipe'
 
     /** First journee date debut cache */
-    const firstDateDebut = journeesCache?.[Object.keys(journeesCache)[0]]?.[0]?.date_debut
+    const firstDateDebut = journeesCache?.[Object.keys(journeesCache)[0]]?.[0]?.date_debut ?? ''
     /** Last journee date debut cache */
-    const lastDateDebut = journeesCache?.[Object.keys(journeesCache).at(-1)]?.at(-1)?.date_debut
+    const lastDateDebut = journeesCache?.[Object.keys(journeesCache).at(-1)!]?.at(-1)?.date_debut ?? ''
 
     // Add years if possible to the calendar name
     if (firstDateDebut || lastDateDebut) {
