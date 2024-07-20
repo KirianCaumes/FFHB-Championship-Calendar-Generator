@@ -1,8 +1,8 @@
 {
-  "name": "ffhbchampionshipcalendar",
+  "name": "ffhb-championship-calendar-generator",
   "dockerComposeFile": "docker-compose.yml",
-  "service": "ffhbchampionshipcalendar_container",
-  "workspaceFolder": "/app_ffhbchampionshipcalendar",
+  "service": "ffhb-championship-calendar-generator_container",
+  "workspaceFolder": "/app_ffhb-championship-calendar-generator",
   "postCreateCommand": "bash .devcontainer/init.sh",
   "customizations": {
     "vscode": {

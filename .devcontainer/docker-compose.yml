@@ -1,21 +1,20 @@
-version: '3'
 services:
-  ffhbchampionshipcalendar_container:
+  ffhb-championship-calendar-generator_container:
     build:
       context: ./
       dockerfile: ./Dockerfile
     stdin_open: true
     tty: true
     volumes:
-      - ../:/app_ffhbchampionshipcalendar:rw
+      - ../:/app_ffhb-championship-calendar-generator:rw
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
     ports:
       - 5000:5000
       - 3000:3000
     networks:
-      - ffhbchampionshipcalendar_network
+      - ffhb-championship-calendar-generator_network
 
 networks:
-  ffhbchampionshipcalendar_network:
+  ffhb-championship-calendar-generator_network:
     driver: 'bridge'

@@ -33,4 +33,4 @@ RUN sudo apt-get update
 RUN sudo apt-get install nodejs -y
 RUN sudo npm i -g gitmoji-cli@8.2.2
 
-WORKDIR /app_ffhbchampionshipcalendar
+WORKDIR /app_ffhb-championship-calendar-generator
