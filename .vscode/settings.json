@@ -18,6 +18,7 @@
   "editor.codeActionsOnSave": {
     "source.fixAll": "explicit"
   },
+  "editor.lightbulb.enabled": "off",
   "eslint.workingDirectories": ["./"],
   "html.format.wrapLineLength": 0,
   "json.format.enable": false,

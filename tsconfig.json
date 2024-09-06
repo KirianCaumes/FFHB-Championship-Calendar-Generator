@@ -4,7 +4,12 @@
     "baseUrl": "./src",
     "target": "ES2023",
     "strict": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "moduleDetection": "force",
+    "isolatedModules": true,
+    "verbatimModuleSyntax": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true
   },
   "include": ["src", ".eslintrc.cjs", ".lintstagedrc.cjs", ".prettierrc.cjs", "cspell.config.cjs"]
 }

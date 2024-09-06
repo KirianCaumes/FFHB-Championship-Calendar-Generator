@@ -235,7 +235,7 @@ export default async function getIcs({
 
             /** Location of the rencontre by the details results */
             const locations = (() => {
-                const address = details[i]
+                const address = details[i]!
                 if (address.status === 'fulfilled') {
                     return address.value.address
                 }
@@ -278,7 +278,7 @@ export default async function getIcs({
     let name: ICalCalendarData['name'] = teamName || 'Équipe'
 
     /** First journee date debut cache */
-    const firstDateDebut = journeesCache?.[Object.keys(journeesCache)[0]]?.[0]?.date_debut ?? ''
+    const firstDateDebut = journeesCache?.[Object.keys(journeesCache)[0]!]?.[0]?.date_debut ?? ''
     /** Last journee date debut cache */
     const lastDateDebut = journeesCache?.[Object.keys(journeesCache).at(-1)!]?.at(-1)?.date_debut ?? ''
 
