@@ -198,6 +198,9 @@
         const helpLinkCopiedElement = /** @type {HTMLInputElement} */ (document.getElementById('help-link-copied'))
         const helpUrlInvalidElement = /** @type {HTMLInputElement} */ (document.getElementById('help-url-invalid'))
 
+        /**
+         * Initialize inputs with values from search params
+         */
         function setInputsFromSearchParams() {
             const searchParams = new URLSearchParams(window.location.search)
             if (searchParams.has(idUrlInput)) {
