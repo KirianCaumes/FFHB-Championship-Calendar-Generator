@@ -152,6 +152,27 @@ export default async function getIcs({
             /** Prefix for the summary event */
             const prefix = (() => {
                 const lib = rencontre.phaseLibelle.toLowerCase()
+                // Ex: 'CDF XXX YYYY (1° TOUR)'
+                if (lib.includes('cdf ')) {
+                    const phase = lib.match(/\(([^)]+)\)/)?.[1]
+                    // Ex: 'CDF XXX YYYY (1° TOUR)'
+                    if (phase) {
+                        return (
+                            {
+                                '1° tour': '1er tour',
+                                '2° tour': '2ème tour',
+                                '3° tour': '3ème tour',
+                                '1': '1er tour',
+                                '2': '2ème tour',
+                                '3': '3ème tour',
+                                '4': '4ème tour',
+                                '5': '5ème tour',
+                            }[phase] ?? phase.replace('°', '').replace('finales de secteurs ', '').replace('finales de zones ', '')
+                        )
+                    }
+                    // Ex: 'FINALE CDF XXX YY'
+                    return lib.split(' cdf ')?.[0] ?? rencontre.phaseLibelle
+                }
                 // Ex: '1ER TOUR DE COUPE UxxM'
                 if (lib.includes(' de coupe')) {
                     return lib.split(' de coupe')?.[0] ?? rencontre.phaseLibelle
@@ -164,7 +185,7 @@ export default async function getIcs({
             })()
 
             /** Summary or title of the event */
-            const summary = `${prefix} : ${rencontre.equipe1Libelle || '?'} vs ${rencontre.equipe2Libelle || '?'}`
+            const summary = `${prefix.charAt(0).toUpperCase() + prefix.slice(1)} : ${rencontre.equipe1Libelle || '?'} vs ${rencontre.equipe2Libelle || '?'}`
 
             /** Journee url to be displayed in event content */
             const journeeUrl = rencontre.extPouleId
