@@ -181,6 +181,10 @@ export default async function getIcs({
                 if (lib.includes(' coupe ')) {
                     return lib.split(' coupe ')?.[0] ?? rencontre.phaseLibelle
                 }
+                // Ex : 'BARRAGES SENIORS 1DTM'
+                if (lib.includes('barrages ')) {
+                    return 'Barrage'
+                }
                 return `J.${rencontre.journeeNumero}`
             })()
 
