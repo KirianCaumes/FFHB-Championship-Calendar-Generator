@@ -307,19 +307,24 @@ export default async function getIcs({
     /**
      * Name of the calendar
      */
-    let name: ICalCalendarData['name'] = teamName || 'Équipe'
+    const name: ICalCalendarData['name'] = (() => {
+        const baseName = teamName || 'Équipe'
 
-    /** First journee date debut cache */
-    const firstDateDebut = journeesCache?.[Object.keys(journeesCache)[0]!]?.[0]?.date_debut ?? ''
-    /** Last journee date debut cache */
-    const lastDateDebut = journeesCache?.[Object.keys(journeesCache).at(-1)!]?.at(-1)?.date_debut ?? ''
+        /** First journee date debut cache */
+        const firstDateDebut = journeesCache?.[Object.keys(journeesCache)[0]!]?.[0]?.date_debut ?? ''
+        /** Last journee date debut cache */
+        const lastDateDebut = journeesCache?.[Object.keys(journeesCache).at(-1)!]?.at(-1)?.date_debut ?? ''
 
-    // Add years if possible to the calendar name
-    if (firstDateDebut || lastDateDebut) {
-        name += ` (${[new Date(firstDateDebut)?.getFullYear(), new Date(lastDateDebut)?.getFullYear()]
-            .filter((value, index, self) => value && self.indexOf(value) === index)
-            .join(' - ')})`
-    }
+        // Add years if possible to the calendar name
+        if (firstDateDebut || lastDateDebut) {
+            const years = [new Date(firstDateDebut)?.getFullYear(), new Date(lastDateDebut)?.getFullYear()]
+                .filter((value, index, self) => value && self.indexOf(value) === index)
+                .join(' - ')
+            return `${baseName} (${years})`
+        }
+
+        return baseName
+    })()
 
     /** Calendar object */
     const cal = ical({
