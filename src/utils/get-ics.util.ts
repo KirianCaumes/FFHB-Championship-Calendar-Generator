@@ -279,9 +279,16 @@ export default async function getIcs({
                     .join(', ')
                     .toUpperCase(),
                 description: [
-                    rencontre.equipe1Score && rencontre.equipe2Score
-                        ? `${status} Score : ${rencontre.equipe1Score} - ${rencontre.equipe2Score}`
-                        : '👉 À venir',
+                    [
+                        rencontre.equipe1Score && rencontre.equipe2Score
+                            ? `${status} Score : ${rencontre.equipe1Score} - ${rencontre.equipe2Score}`
+                            : '👉 À venir',
+                        rencontre.equipe1ScoreMT && rencontre.equipe2ScoreMT
+                            ? `(${rencontre.equipe1ScoreMT} - ${rencontre.equipe2ScoreMT})`
+                            : '',
+                    ]
+                        .filter(x => !!x)
+                        .join(' '),
                     fileUrl ? `🔗 ${fileUrl.replace('https://', '')}` : null,
                     referees?.length ? `🧑‍⚖️ ${new Intl.ListFormat('fr-FR', { style: 'long', type: 'conjunction' }).format(referees)}` : null,
                     journeeUrl ? `#️⃣ ${journeeUrl}` : null,
