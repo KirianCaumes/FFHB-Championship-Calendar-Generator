@@ -9,10 +9,12 @@ app.disable('x-powered-by')
 app.use('/bulma', express.static(`${path.resolve()}/node_modules/bulma/css`))
 app.use(express.static('public'))
 
-app.all('*', index)
+app.use(index)
 
-app.listen(
-    process.env.PORT || 3000,
+// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+const port = process.env.PORT || 3000
+
+app.listen(port, () => {
     // eslint-disable-next-line no-console
-    () => console.log(`FFHB Championship Calendar Generator listening on ${process.env.PORT || 3000}`),
-)
+    console.log(`FFHB Championship Calendar Generator listening on ${port}`)
+})

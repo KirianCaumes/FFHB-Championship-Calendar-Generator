@@ -1,15 +1,19 @@
 {
   "compilerOptions": {
-    "module": "Preserve",
-    "baseUrl": "./src",
     "target": "ES2023",
+    "module": "Preserve",
+    "declaration": true,
+    "outDir": "./dist",
     "strict": true,
     "esModuleInterop": true,
+    "baseUrl": "./src",
     "moduleDetection": "force",
     "isolatedModules": true,
     "verbatimModuleSyntax": true,
     "noUncheckedIndexedAccess": true,
-    "noImplicitOverride": true
+    "noImplicitOverride": true,
+    "allowJs": true,
+    "skipLibCheck": true
   },
-  "include": ["src", ".eslintrc.cjs", ".lintstagedrc.cjs", ".prettierrc.cjs", "cspell.config.cjs"]
+  "include": ["src", "eslint.config.js", ".lintstagedrc.cjs", ".prettierrc.cjs", "cspell.config.cjs"]
 }
