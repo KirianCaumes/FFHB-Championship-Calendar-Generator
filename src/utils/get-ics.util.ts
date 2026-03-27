@@ -246,6 +246,7 @@ export default async function getIcs({
                             .join('\n'),
                         start: dt,
                         end: dt,
+                        timezone: 'Europe/Paris',
                         summary: `🔄️ ${summary}`,
                         url,
                     }
@@ -332,6 +333,7 @@ export default async function getIcs({
                         .join('\n'),
                     start: dtStart,
                     end: dtEnd,
+                    timezone: 'Europe/Paris',
                     summary,
                     url,
                     attachments: fileUrl ? [fileUrl] : undefined,
@@ -366,7 +368,6 @@ export default async function getIcs({
 
     /** Calendar object */
     const cal = ical({
-        timezone: 'Europe/Paris',
         name: title || name,
         events,
     })
@@ -377,7 +378,7 @@ export default async function getIcs({
     }
 
     // Save to cache
-    await writeFile(filePath, ical({ timezone: 'Europe/Paris', name, events }).toString())
+    await writeFile(filePath, ical({ name, events }).toString())
 
     return cal.toString()
 }
