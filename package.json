@@ -13,7 +13,7 @@
   },
   "homepage": "https://github.com/KirianCaumes/Emptio#readme",
   "engines": {
-    "node": "20.x.x"
+    "node": "24.x.x"
   },
   "type": "module",
   "funding": [
@@ -37,7 +37,8 @@
     "bulma": "^1.0.4",
     "express": "^5.1.0",
     "ical-generator": "^9.0.0",
-    "jsdom": "^27.0.1"
+    "jsdom": "^27.0.1",
+    "tsx": "^4.22.4"
   },
   "devDependencies": {
     "@cspell/dict-fr-fr": "^2.3.2",
@@ -57,7 +58,6 @@
     "husky": "^9.1.7",
     "lint-staged": "^16.2.6",
     "prettier": "^3.6.2",
-    "tsx": "^4.20.6",
     "typescript-eslint": "^8.46.2"
   }
 }

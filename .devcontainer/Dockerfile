@@ -18,19 +18,21 @@ USER $USERNAME
 
 RUN sudo apt-get clean
 RUN sudo apt-get update
-RUN sudo apt-get -y install curl
-RUN sudo apt-get -y install git
-RUN sudo apt-get -y install nano
+RUN sudo apt-get install curl -y
+RUN sudo apt-get install nano -y
+RUN sudo apt-get install git -y
 RUN sudo apt-get update --fix-missing
 RUN export EDITOR="/usr/bin/nano"
 
-# install nodejs 20.x
+# install nodejs 24.x
 RUN sudo apt-get install -y ca-certificates gnupg
 RUN sudo mkdir -p /etc/apt/keyrings  
 RUN curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
-RUN echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_20.x nodistro main" | sudo tee /etc/apt/sources.list.d/nodesource.list
+RUN echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_24.x nodistro main" | sudo tee /etc/apt/sources.list.d/nodesource.list
 RUN sudo apt-get update 
 RUN sudo apt-get install nodejs -y
+
+# install dep
 RUN sudo npm i -g gitmoji-cli@8.2.2
 
-WORKDIR /app_ffhb-championship-calendar-generator
+WORKDIR /app_discogs-compare-two-collections
