@@ -279,7 +279,7 @@ export default async function getIcs({
                 /** FDM URL */
                 const fileUrl =
                     fileCode.length >= 4
-                        ? `https://media-ffhb-fdm.ffhandball.fr/fdm/${[
+                        ? `https://fdm.fdme.ffhandball.fr/fdm/${[
                               fileCode[0],
                               fileCode[1],
                               fileCode[2],
