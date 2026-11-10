@@ -6,7 +6,7 @@
     "outDir": "./dist",
     "strict": true,
     "esModuleInterop": true,
-    "baseUrl": "./src",
+    "paths": { "*": ["./src/*"] },
     "moduleDetection": "force",
     "isolatedModules": true,
     "verbatimModuleSyntax": true,
