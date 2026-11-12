@@ -24,11 +24,11 @@ RUN sudo apt-get install git -y
 RUN sudo apt-get update --fix-missing
 RUN export EDITOR="/usr/bin/nano"
 
-# install nodejs 24.x
+# install nodejs 26.x
 RUN sudo apt-get install -y ca-certificates gnupg
 RUN sudo mkdir -p /etc/apt/keyrings  
 RUN curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
-RUN echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_24.x nodistro main" | sudo tee /etc/apt/sources.list.d/nodesource.list
+RUN echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_26.x nodistro main" | sudo tee /etc/apt/sources.list.d/nodesource.list
 RUN sudo apt-get update 
 RUN sudo apt-get install nodejs -y
 
